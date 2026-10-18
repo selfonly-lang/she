@@ -33,7 +33,8 @@ export function setupMemberAuth({ sb, notify, showAccount }) {
     }
     const response = await fetch('/api/auth?action=' + action, {
       method: body === undefined ? 'GET' : 'POST', credentials: 'same-origin',
-      cache: 'no-store', headers, ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+      cache: 'no-store', headers, signal: AbortSignal.timeout(body === undefined ? 8000 : 20000),
+      ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     });
     let data;
     try { data = await response.json(); } catch { throw Error('service_unavailable'); }
@@ -42,6 +43,17 @@ export function setupMemberAuth({ sb, notify, showAccount }) {
   }
 
   function selectEmailTab(mode) {
+    const activeForm = q('#email-login-panel').hidden ? q('#signup-form') : q('#login-form');
+    const nextForm = mode === 'signup' ? q('#signup-form') : q('#login-form');
+    if (activeForm !== nextForm) {
+      for (const name of ['email', 'password']) {
+        if (activeForm.elements[name].value && !nextForm.elements[name].value) nextForm.elements[name].value = activeForm.elements[name].value;
+      }
+      // Never leave a previously revealed password visible when switching forms.
+      for (const button of document.querySelectorAll('[data-password-toggle]')) hidePassword(button);
+      q('#auth-message').textContent = '';
+      q('#auth-message').classList.remove('success');
+    }
     for (const tab of document.querySelectorAll('[data-auth-tab]')) {
       const selected = tab.dataset.authTab === mode;
       tab.setAttribute('aria-selected', String(selected));
@@ -51,12 +63,44 @@ export function setupMemberAuth({ sb, notify, showAccount }) {
     q('#email-signup-panel').hidden = mode !== 'signup';
   }
 
+  function hidePassword(button) {
+    q('#' + button.getAttribute('aria-controls')).type = 'password';
+    button.setAttribute('aria-pressed', 'false');
+    button.textContent = '顯示';
+    button.setAttribute('aria-label', button.getAttribute('aria-label').replace('隱藏', '顯示'));
+  }
+
+  function clearPasswords() {
+    for (const input of document.querySelectorAll('#auth-panel input[name="password"]')) input.value = '';
+    for (const button of document.querySelectorAll('[data-password-toggle]')) hidePassword(button);
+  }
+
+  async function refreshFeatures() {
+    try { features = await api('status'); } catch { /* Email remains immediately available. */ }
+    const enabled = features.line?.enabled === true;
+    q('#line-access').hidden = !enabled;
+    q('#line-login').disabled = !enabled;
+    q('#line-status').textContent = enabled ? '名稱與頭像會帶入私人檔案，之後可修改。' : '';
+    q('#social-availability').textContent = enabled ? '需要協助？' : 'LINE 登入準備中';
+    renderLine(); renderSelf();
+  }
+
   async function initialize() {
     if (location.hostname.endsWith('.vercel.app')) {
       location.replace('https://she.self.com.tw' + location.pathname + location.search);
       return new Promise(() => {});
     }
     selectEmailTab(new URL(location.href).searchParams.get('mode') === 'signup' ? 'signup' : 'login');
+    for (const button of document.querySelectorAll('[data-password-toggle]')) {
+      button.addEventListener('click', () => {
+        const input = q('#' + button.getAttribute('aria-controls'));
+        const reveal = input.type === 'password';
+        input.type = reveal ? 'text' : 'password';
+        button.textContent = reveal ? '隱藏' : '顯示';
+        button.setAttribute('aria-pressed', String(reveal));
+        button.setAttribute('aria-label', button.getAttribute('aria-label').replace(reveal ? '顯示' : '隱藏', reveal ? '隱藏' : '顯示'));
+      });
+    }
     for (const tab of document.querySelectorAll('[data-auth-tab]')) {
       tab.addEventListener('click', () => selectEmailTab(tab.dataset.authTab));
       tab.addEventListener('keydown', event => {
@@ -83,10 +127,8 @@ export function setupMemberAuth({ sb, notify, showAccount }) {
       } catch (error) { q('#auth-message').textContent = explain(error); }
       cleanQuery('line');
     }
-    try { features = await api('status'); } catch { /* Email remains available. */ }
-    q('#line-login').disabled = !features.line.enabled;
-    q('#line-status').textContent = features.line.enabled ? '使用 LINE 的名稱與頭像建立私人檔案，之後都可以修改。' : 'LINE 快速登入準備中，目前可使用下方的電子郵件登入或註冊。';
-    if (!features.line.enabled || params.get('mode')) q('#email-access').open = true;
+    // Provider readiness must not delay Email login or restoring an existing session.
+    void refreshFeatures();
     q('#line-login').addEventListener('click', async () => {
       if (!q('#line-consent').checked) {
         q('#auth-message').textContent = messages.consent_required;
@@ -164,10 +206,10 @@ export function setupMemberAuth({ sb, notify, showAccount }) {
   }
 
   async function afterSignIn(user) {
+    if (newLineUser || pendingSelf || pendingLine) { showAccount(); newLineUser = false; }
     try { const links = await api('links', undefined, true); selfLinked = links.self_linked; lineLinked = links.line_linked; } catch { selfLinked = false; lineLinked = false; }
     renderSelf(); renderLine();
-    if (newLineUser || pendingSelf || pendingLine) { showAccount(); newLineUser = false; }
   }
 
-  return { initialize, afterSignIn, renderProfile, showAccount, explain };
+  return { initialize, afterSignIn, renderProfile, showAccount, selectEmailTab, clearPasswords, explain };
 }
