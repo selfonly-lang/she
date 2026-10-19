@@ -135,11 +135,30 @@ async function selfCallback(f, start) { return call(f, 'self-callback', { method
 test('unconfigured or unavailable storage never advertises social login readiness', async () => {
   const absent = fixture({ env: { SHE_SUPABASE_SERVICE_ROLE_KEY: undefined } });
   const result = await call(absent, 'status', { method: 'GET' });
-  assert.deepEqual(result.body, { line: { enabled: false }, self: { enabled: false } });
+  assert.deepEqual(result.body, { line: { enabled: false, setup: { missing_environment: ['SHE_SUPABASE_SERVICE_ROLE_KEY'], identity_storage: 'unchecked' } }, self: { enabled: false } });
   assert.equal(absent.events.length, 0);
   const missing = fixture({ storage: false });
   assert.equal((await call(missing, 'status', { method: 'GET' })).body.line.enabled, false);
   assert.equal((await call(missing, 'line-start', { body: { consent: true, policy_version: 'she-2026-10' } })).status, 503);
+});
+
+test('readiness identifies each missing setting and separates storage failure without disclosing credentials', async () => {
+  const names = ['LINE_LOGIN_CHANNEL_ID', 'LINE_LOGIN_CHANNEL_SECRET', 'SHE_SUPABASE_SERVICE_ROLE_KEY'];
+  for (const name of names) {
+    const f = fixture({ env: { [name]: undefined } });
+    const result = await call(f, 'status', { method: 'GET' });
+    assert.equal(result.body.line.enabled, false);
+    assert.deepEqual(result.body.line.setup.missing_environment, [name]);
+    assert.equal(result.body.line.setup.identity_storage, name === 'SHE_SUPABASE_SERVICE_ROLE_KEY' ? 'unchecked' : 'ready');
+    for (const value of Object.values(env)) assert.ok(!result.text.includes(value));
+    assert.ok(f.events.every(event => event.method === 'GET' && event.url.pathname === '/rest/v1/she_auth_identities' && event.url.searchParams.get('limit') === '0'));
+  }
+  const missing = await call(fixture({ storage: false }), 'status', { method: 'GET' });
+  assert.deepEqual(missing.body.line.setup, { missing_environment: [], identity_storage: 'unavailable' });
+  assert.equal(missing.body.line.enabled, false);
+  const ready = await call(fixture(), 'status', { method: 'GET' });
+  assert.equal(ready.body.line.enabled, true);
+  assert.deepEqual(ready.body.line.setup, { missing_environment: [], identity_storage: 'ready' });
 });
 
 test('POST rejects foreign/missing origins and missing explicit consent before contacting providers', async () => {

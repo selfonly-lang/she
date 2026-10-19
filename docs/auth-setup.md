@@ -40,6 +40,8 @@ LINE 授權回站網址不攜帶會員資料、Supabase session 或 LINE token�
 
 缺少伺服器憑證或身分對應資料表時，快速登入會維持停用，Email 登入／註冊繼續可用；不能將這個狀態描述為 LINE 登入已啟用。
 
+部署後可檢查 `https://she.self.com.tw/api/auth?action=status`：`line.setup.missing_environment` 只列出正式伺服器缺少的變數名稱，不回傳任何值；`identity_storage` 為 `unchecked` 表示尚無伺服器金鑰可檢查、`unavailable` 表示金鑰授權或身分表讀取失敗、`ready` 表示已通過零筆資料的讀取檢查。`enabled: true` 表示前置設定已就緒，仍需真實 LINE 授權回站驗收。
+
 ## 稍後啟用 SELF 母站連結
 
 由 SELF 原會員系統有權管理 OAuth 應用的人員，新增或核對 SHE 專用的應用程式，使用 `profile` scope、精確回呼網址與明確的會員同意畫面，不開啟自動同意：
