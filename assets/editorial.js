@@ -23,6 +23,13 @@
     if (key === active) a.setAttribute('aria-current', 'page');
     links.append(a);
   }
+  if (![...links.querySelectorAll('a')].some(link => new URL(link.href, location.origin).pathname === '/line/')) {
+    const lineHub = document.createElement('a');
+    lineHub.href = '/line/';
+    lineHub.textContent = '官方 LINE';
+    if (page === 'line') lineHub.setAttribute('aria-current', 'page');
+    links.append(lineHub);
+  }
   masthead.append(links);
   if (!existingMasthead) document.body.prepend(masthead);
   if (legacyHeader) legacyHeader.classList.add('she-original-header');
