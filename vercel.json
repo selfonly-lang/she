@@ -10,5 +10,11 @@
       ]
     }
   ],
-  "buildCommand": "npm run build"
+  "buildCommand": "npm run build",
+  "rewrites": [
+    {
+      "source": "/s/:slug",
+      "destination": "/index.html"
+    }
+  ]
 }
