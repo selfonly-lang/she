@@ -12,6 +12,6 @@ The repository should deploy through its existing Vercel Git connection. Preserv
 
 ## Official LINE
 
-The official account is `@673opbay` (display name `Sheself`). The join link is `https://line.me/R/ti/p/@673opbay`.
+The owner confirmed on 2026-10-20 that FOBI 2026 belongs within SHE as an event-marketing/activity module. `/events/` links to the existing FOBI site; `/line/` identifies `@673opbay` as FOBI event support. General SHE product/member support scope is pending. Do not describe it as SHE-exclusive support or change FOBI notification settings.
 
 The member page supports LINE Login, creating a private profile and explicitly linking existing Email accounts. SELF mother-site linking is optional and uses its existing OAuth service. See [the activation and validation instructions](docs/auth-setup.md) for the required server-only Vercel settings, additive Supabase migration and exact callbacks. Joining the official account and signing into SHE are separate integrations. Missing configuration keeps social login disabled while Email registration remains available.

@@ -26,7 +26,7 @@
 | `LINE_LOGIN_CHANNEL_SECRET` | 同一個 LINE Login Channel 的 Secret |
 | `SHE_SUPABASE_SERVICE_ROLE_KEY` | 上述 SHE Supabase 專案的伺服器用 secret／service_role key，供 Auth Admin 與身分對應操作 |
 
-LINE Login Channel 應與官方帳號屬於正確的 Provider；若要連動加入好友功能，需在 LINE Developers 核對官方帳號的連結設定。`@673opbay` 的 Messaging API 憑證不能直接當成 LINE Login Channel。
+LINE Login Channel 應與官方帳號屬於正確的 Provider；若要連動加入好友功能，需在 LINE Developers 核對官方帳號的連結設定。官方帳號的 Messaging API 憑證不能直接當成 LINE Login Channel。
 
 LINE Developers 的正式 Callback URL 必須精確為：
 

@@ -1,3 +1,5 @@
+> 2026-10-20 使用者已確認：FOBI 2026 納入 SHE 事件行銷與活動模組。@673opbay 以「FOBI 活動客服」標示；SHE 一般商品與會員客服範圍待設定。以下 SHE OA 資料為草稿，不變更 FOBI 的帳號名稱、通知、選單或活動設定。
+
 # SHE 官方 LINE：帳號資訊與三篇貼文交付
 
 > 2026-10-20。此文件是 **待貼入 LINE Official Account Manager 的內容**，不是 LINE OA 已完成設定或已刊登的證明。
@@ -6,10 +8,10 @@
 
 | 欄位 | 建議正式內容 |
 | --- | --- |
-| 已知 LINE 官方帳號 ID | `@673opbay` |
+| SHE LINE 官方帳號 ID | 待核實，尚未開放客服 |
 | 官方網站 | https://she.self.com.tw/ |
 | 官網 LINE 專區 | https://she.self.com.tw/line/ |
-| 加入好友連結 | https://line.me/R/ti/p/@673opbay |
+| 加入好友連結 | 暫不提供；官網入口統一至 /line/ |
 | 建議顯示名稱 | SHE｜Style. Her. Empire.（目前是否可變更及實際名稱請於後台核對） |
 | 帳號一句話介紹 | SHE 女性時尚與事業平台，讓風格、專業與每段女性故事找到自己的舞台。 |
 | 帳號詳細介紹 | SHE｜Style. Her. Empire. 連結女性故事、個人風格、品牌精選與事業可能。探索女性人物、打造個人時尚專頁、了解 SHE 會員服務與品牌動態。加入官方 LINE，與我們一起開啟妳的下一章。 |
@@ -41,7 +43,7 @@ SHE 是一個連結女性故事、個人風格、品牌選品與事業可能的�
 
 我們相信，每個人的經歷、專業與選擇，都值得擁有自己的舞台。
 
-從今天開始，和 SHE 一起探索更多可能。歡迎加入官方 LINE，收到平台資訊，也和我們聊聊妳的故事。
+從今天開始，和 SHE 一起探索更多可能。歡迎探索官網內容，了解平台資訊與女性故事。
 
 👉 https://she.self.com.tw/line/
 
@@ -87,7 +89,7 @@ SHE 從女性日常、時尚風格與生活事業出發，邀請妳探索品牌�
 
 ## LINE Login 正式啟用卡點
 
-- LINE Official Account 與 LINE Login 是不同服務；僅有 `@673opbay` 無法完成網站 OAuth。
+- LINE Official Account 與 LINE Login 是不同服務；僅有 已核實的 SHE 官方帳號 ID 無法完成網站 OAuth。
 - SHE 服務目前仍需在 LINE Developers 完成 Login Channel 建立、對應 Provider／OA、正式回呼設定。
 - Callback：`https://she.self.com.tw/api/auth?action=line-callback`
 - Vercel Production 必須由授權人安全設定：`LINE_LOGIN_CHANNEL_ID`、`LINE_LOGIN_CHANNEL_SECRET`、`SHE_SUPABASE_SERVICE_ROLE_KEY`；絕不在此儲存實際值。
