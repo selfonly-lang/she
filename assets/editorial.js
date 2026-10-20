@@ -3,13 +3,8 @@
   const page = document.documentElement.dataset.shePage;
   document.documentElement.classList.add('she-editorial');
   document.documentElement.classList.add('she-enhanced');
-  const nav = [
-    ['/', '首頁', 'home'], ['/women/', '女性人物', 'women'],
-    ['/#story', '女力觀點', 'story'], ['/catalog/', '品牌精選', 'catalog'],
-    ['/studio/', '創作專頁', 'studio'], ['/admin/', '會員中心', 'admin'],
-    ['/line/', '官方 LINE', 'line'],
-  ];
-  const active = page === 'people' ? 'women' : page === 'manage-products' ? 'admin' : page;
+  const nav = [['/', '首頁', 'home'], ['/catalog/', '精選商品', 'catalog'], ['/women/', '女性人物', 'women'], ['/admin/', '會員中心', 'admin']];
+  const active = page === 'people' ? 'women' : ['studio','manage-products'].includes(page) ? 'admin' : page;
   const legacyHeader = document.querySelector('body > header:not(.she-masthead)');
   const existingMasthead = document.querySelector('.she-masthead');
   const masthead = existingMasthead || document.createElement('header');
@@ -22,13 +17,6 @@
     const a = document.createElement('a'); a.href = href; a.textContent = label;
     if (key === active) a.setAttribute('aria-current', 'page');
     links.append(a);
-  }
-  if (![...links.querySelectorAll('a')].some(link => new URL(link.href, location.origin).pathname === '/line/')) {
-    const lineHub = document.createElement('a');
-    lineHub.href = '/line/';
-    lineHub.textContent = '官方 LINE';
-    if (page === 'line') lineHub.setAttribute('aria-current', 'page');
-    links.append(lineHub);
   }
   masthead.append(links);
   if (!existingMasthead) document.body.prepend(masthead);
@@ -82,10 +70,10 @@
     const skip = document.createElement('a'); skip.className = 'she-skip'; skip.href = '#' + main.id; skip.textContent = '跳到主要內容'; document.body.prepend(skip);
   }
   const pageTitles = {
-    catalog: ['THE SHE SELECTION', 'Considered. Curated. SHE.', '品牌精選，為生活與事業挑選更好的可能。'],
-    women: ['WOMEN WITH VISION', 'Her story. Her influence.', '女性人物・專業故事・事業影響力'],
-    studio: ['THE PERSONAL EDIT', 'Your story. Your signature.', '從一張封面開始，編輯妳的故事與品牌。'],
-    'manage-products': ['BUSINESS DESK', 'The business behind the beauty.', '商品、價格與刊登管理'],
+    catalog: ['THE SHE SELECTION', '精選商品與服務', '品牌精選，為生活與事業挑選更好的可能。'],
+    women: ['WOMEN WITH VISION', '女性人物', '女性人物・專業故事・事業影響力'],
+    studio: ['THE PERSONAL EDIT', '我的時尚專頁', '從一張封面開始，編輯妳的故事與品牌。'],
+    'manage-products': ['BUSINESS DESK', '商品管理', '商品、價格與刊登管理'],
   };
   if (pageTitles[page] && !document.querySelector('.she-page-heading')) {
     const [kicker, title, description] = pageTitles[page];
@@ -109,7 +97,7 @@
     observer.observe(auth, { attributes: true, attributeFilter: ['class'] });
     const app = document.getElementById('app');
     const heading = app.querySelector('.she-member-heading') || document.createElement('div'); heading.className = 'she-member-heading';
-    heading.innerHTML = '<p class="she-kicker">THE MEMBERS EDIT</p><h1>Make it your own.</h1>';
+    heading.innerHTML = '<p class="she-kicker">THE MEMBERS EDIT</p><h1>我的 SHE</h1>';
     app.prepend(heading);
     document.getElementById('she-profile-cta')?.addEventListener('click', () => document.querySelector('[data-tab="account"]')?.click());
   }
@@ -173,7 +161,7 @@
     }
   }
   const footer = document.querySelector('.she-footer') || document.createElement('footer'); footer.className = 'she-footer';
-  footer.innerHTML = '<div class="she-footer-top"><div><a class="she-footer-brand" href="/">SHE</a><p class="she-footer-tagline">Style. Her. Empire.</p><p class="she-footer-label">THE ENTREPRENEUR EDIT</p></div><div><p class="she-footer-label">EXPLORE</p><nav class="she-footer-links" aria-label="探索 SHE"><a href="/women/">女性人物</a><a href="/catalog/">品牌精選</a><a href="/studio/">創作專頁</a></nav></div><div><p class="she-footer-label">CONNECT</p><nav class="she-footer-links" aria-label="聯絡與會員"><a href="/admin/">會員中心</a><a href="/line/">LINE 官方專區</a><a href="https://line.me/R/ti/p/@673opbay" target="_blank" rel="noopener noreferrer">官方 LINE ↗</a><a href="/policies/">會員條款與資料使用</a></nav></div></div><div class="she-footer-bottom"><span>SHE · 女性時尚與事業平台</span><span>A SELF COMMUNITY</span></div><div class="she-footer-tools"></div>';
+  footer.innerHTML = '<div class="she-footer-top"><div><a class="she-footer-brand" href="/">SHE</a><p class="she-footer-tagline">Style. Her. Empire.</p><p class="she-footer-label">THE ENTREPRENEUR EDIT</p></div><div><p class="she-footer-label">EXPLORE</p><nav class="she-footer-links" aria-label="探索 SHE"><a href="/women/">女性人物</a><a href="/catalog/">品牌精選</a><a href="/admin/?next=%2Fstudio%2F">建立我的專頁</a></nav></div><div><p class="she-footer-label">CONNECT</p><nav class="she-footer-links" aria-label="聯絡與會員"><a href="/admin/">會員中心</a><a href="https://line.me/R/ti/p/@673opbay" target="_blank" rel="noopener noreferrer">官方 LINE ↗</a><a href="/policies/">會員條款與資料使用</a></nav></div></div><div class="she-footer-bottom"><span>SHE · 女性時尚與事業平台</span><span>A SELF COMMUNITY</span></div><div class="she-footer-tools"></div>';
   const tools = footer.querySelector('.she-footer-tools');
   for (const selector of ['.read-controls', '.demo-label']) { const node = document.querySelector(selector); if (node) tools.append(node); }
   document.body.append(footer);
@@ -189,12 +177,11 @@
   // Shared SHE journey: one clearly labeled route on every page, without changing auth or product data.
   const sheRoutes = [
     { href: '/', label: '首頁', glyph: '⌂', key: 'home' },
-    { href: '/women/', label: '人物', glyph: '✦', key: 'women' },
     { href: '/catalog/', label: '選品', glyph: '◇', key: 'catalog' },
-    { href: '/studio/', label: '創作', glyph: '✎', key: 'studio' },
+    { href: '/women/', label: '人物', glyph: '✦', key: 'women' },
     { href: '/admin/', label: '我的', glyph: '○', key: 'admin' },
   ];
-  const routeKey = page === 'people' ? 'women' : page === 'manage-products' ? 'admin' : page;
+  const routeKey = page === 'people' ? 'women' : ['studio','manage-products'].includes(page) ? 'admin' : page;
   const dock = document.createElement('nav');
   dock.className = 'she-mobile-dock';
   dock.setAttribute('aria-label', '手機快速導覽');
@@ -232,7 +219,7 @@
     admin: ['建立個人時尚專頁，從會員服務開始', '開始創作', '/studio/'],
     policies: ['完成條款閱讀後，返回會員登入或註冊', '前往會員中心', '/admin/'],
   };
-  if (journey[page]) {
+  if (journey[page] && !['catalog','admin','studio'].includes(page)) {
     const [description, label, href] = journey[page];
     const region = document.querySelector('.she-page-heading') || (page === 'admin' ? document.querySelector('.she-member-heading') : null);
     if (region && !document.querySelector('.she-journey')) {
