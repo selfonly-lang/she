@@ -7,7 +7,7 @@
     ['/', '首頁', 'home'], ['/women/', '女性人物', 'women'],
     ['/#story', '女力觀點', 'story'], ['/catalog/', '品牌精選', 'catalog'],
     ['/studio/', '創作專頁', 'studio'], ['/admin/', '會員中心', 'admin'],
-    ['/line/', '官方 LINE', 'line'],
+    ['/line/', 'LINE 與活動', 'line'],
   ];
   const active = page === 'people' ? 'women' : page === 'manage-products' ? 'admin' : page;
   const legacyHeader = document.querySelector('body > header:not(.she-masthead)');
@@ -26,10 +26,11 @@
   if (![...links.querySelectorAll('a')].some(link => new URL(link.href, location.origin).pathname === '/line/')) {
     const lineHub = document.createElement('a');
     lineHub.href = '/line/';
-    lineHub.textContent = '官方 LINE';
+    lineHub.textContent = 'LINE 與活動';
     if (page === 'line') lineHub.setAttribute('aria-current', 'page');
     links.append(lineHub);
   }
+  if (!links.querySelector('[href="/events/"]')) { const eventLink = document.createElement('a'); eventLink.href = '/events/'; eventLink.textContent = '活動'; links.append(eventLink); }
   masthead.append(links);
   if (!existingMasthead) document.body.prepend(masthead);
   if (legacyHeader) legacyHeader.classList.add('she-original-header');
@@ -173,7 +174,7 @@
     }
   }
   const footer = document.querySelector('.she-footer') || document.createElement('footer'); footer.className = 'she-footer';
-  footer.innerHTML = '<div class="she-footer-top"><div><a class="she-footer-brand" href="/">SHE</a><p class="she-footer-tagline">Style. Her. Empire.</p><p class="she-footer-label">THE ENTREPRENEUR EDIT</p></div><div><p class="she-footer-label">EXPLORE</p><nav class="she-footer-links" aria-label="探索 SHE"><a href="/women/">女性人物</a><a href="/catalog/">品牌精選</a><a href="/studio/">創作專頁</a></nav></div><div><p class="she-footer-label">CONNECT</p><nav class="she-footer-links" aria-label="聯絡與會員"><a href="/admin/">會員中心</a><a href="/line/">LINE 官方專區</a><a href="https://line.me/R/ti/p/@673opbay" target="_blank" rel="noopener noreferrer">官方 LINE ↗</a><a href="/policies/">會員條款與資料使用</a></nav></div></div><div class="she-footer-bottom"><span>SHE · 女性時尚與事業平台</span><span>A SELF COMMUNITY</span></div><div class="she-footer-tools"></div>';
+  footer.innerHTML = '<div class="she-footer-top"><div><a class="she-footer-brand" href="/">SHE</a><p class="she-footer-tagline">Style. Her. Empire.</p><p class="she-footer-label">THE ENTREPRENEUR EDIT</p></div><div><p class="she-footer-label">EXPLORE</p><nav class="she-footer-links" aria-label="探索 SHE"><a href="/women/">女性人物</a><a href="/catalog/">品牌精選</a><a href="/studio/">創作專頁</a></nav></div><div><p class="she-footer-label">CONNECT</p><nav class="she-footer-links" aria-label="聯絡與會員"><a href="/admin/">會員中心</a><a href="/line/">LINE 專區</a><a href="/line/" target="_blank" rel="noopener noreferrer">LINE 服務狀態 ↗</a><a href="/policies/">會員條款與資料使用</a></nav></div></div><div class="she-footer-bottom"><span>SHE · 女性時尚與事業平台</span><span>A SELF COMMUNITY</span></div><div class="she-footer-tools"></div>';
   const tools = footer.querySelector('.she-footer-tools');
   for (const selector of ['.read-controls', '.demo-label']) { const node = document.querySelector(selector); if (node) tools.append(node); }
   document.body.append(footer);
@@ -213,20 +214,19 @@
   }
   document.body.append(dock);
 
-  // Official account help is always reachable; it is not a substitute for LINE Login.
+  // Route to service status until a SHE customer-service account is verified.
   const lineHelp = document.createElement('a');
   lineHelp.className = 'she-line-help';
-  lineHelp.href = 'https://line.me/R/ti/p/@673opbay';
-  lineHelp.target = '_blank';
+  lineHelp.href = '/line/';
   lineHelp.rel = 'noopener noreferrer';
-  lineHelp.setAttribute('aria-label', '聯繫 SHE 官方 LINE 客服（另開視窗）');
-  lineHelp.innerHTML = '<span class="she-line-dot" aria-hidden="true"></span><span>LINE 諮詢</span><span aria-hidden="true">↗</span>';
+  lineHelp.setAttribute('aria-label', '查看 SHE LINE 服務狀態');
+  lineHelp.innerHTML = '<span class="she-line-dot" aria-hidden="true"></span><span>LINE 與活動</span><span aria-hidden="true">↗</span>';
   document.body.append(lineHelp);
 
   const journey = {
     women: ['想讓妳的故事也被看見？', '建立我的時尚專頁', '/studio/'],
     people: ['探索更多女性故事與合作機會', '返回女性人物', '/women/'],
-    catalog: ['挑選品牌後，可詢問會員服務及商品細節', '諮詢官方 LINE', 'https://line.me/R/ti/p/@673opbay'],
+    catalog: ['商品與會員服務請查看說明；FOBI 活動客服另有入口', '查看 LINE 服務狀態', '/line/'],
     studio: ['先登入或註冊，再保存與發佈妳的作品', '前往會員中心', '/admin/?next=%2Fstudio%2F'],
     'manage-products': ['商品管理完成後，回到公開頁檢查展示', '查看品牌精選', '/catalog/'],
     admin: ['建立個人時尚專頁，從會員服務開始', '開始創作', '/studio/'],
