@@ -15,9 +15,10 @@ export function HeroCover({people,onSelect,go,paused,setPaused,reduced}){
  </section>
 }
 export function PersonalEdition({person,peopleState,products,onExit,reduced}){
- const [product,setProduct]=useState(null);const [page,setPage]=useState('story'),[number,setNumber]=useState(1),[message,setMessage]=useState('');const focus=useRef();
+ const [product,setProduct]=useState(null);const [page,setPage]=useState(()=>{const v=new URLSearchParams(location.hash.slice(1)).get('view');return ['story','shop','services','contact'].includes(v)?v:'story'}),[number,setNumber]=useState(1),[message,setMessage]=useState('');const focus=useRef();
  useEffect(()=>{document.title=person?`${person.name}｜SHE 個人品牌專頁`:'SHE｜讀取專頁';focus.current?.focus()},[person]);
- const navigate=p=>{setProduct(null);setPage(p);setNumber(1);setMessage('');};
+ const navigate=p=>{const hash=new URLSearchParams(location.hash.slice(1));hash.set('view',p);history.pushState({},'',location.pathname+location.search+'#'+hash);setProduct(null);setPage(p);setNumber(1);setMessage('');};
+ useEffect(()=>{const back=()=>{const p=new URLSearchParams(location.hash.slice(1)).get('view');setPage(['story','shop','services','contact'].includes(p)?p:'story');setProduct(null)};window.addEventListener('popstate',back);window.addEventListener('hashchange',back);return()=>{window.removeEventListener('popstate',back);window.removeEventListener('hashchange',back)}},[]);
  if(!person)return <main className="edition-unavailable"><h1>{peopleState.loading?'正在翻開她的專頁…':'專頁目前無法公開讀取'}</h1><p>請確認網址，或等候專頁完成審核與公開讀取設定。</p><button className="gold-button" onClick={peopleState.retry}>重新載入</button><button className="outline" onClick={onExit}>返回 SHE</button></main>;
  const items=person.sample?products.data.slice(0,4):curatedProducts(products.data,person.selected_product_ids);const paging=pageItems(items,number,4);const contact=normalizeLine(person.contact_url);const sharePath='/s/'+encodeURIComponent(person.slug);
  async function share(){try{await navigator.clipboard.writeText(location.origin+sharePath);setMessage(person.sample?'已複製示意專頁網址':'已複製專頁短網址')}catch{setMessage(location.origin+sharePath)}}
