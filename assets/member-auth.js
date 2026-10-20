@@ -17,6 +17,29 @@ export function setupMemberAuth({ sb, notify, showAccount }) {
   let lineLinked = false;
   let pendingLine = new URL(location.href).searchParams.get('line_link') === 'confirm';
   let pendingSelf = new URL(location.href).searchParams.get('self') === 'confirm';
+  const returnPaths = new Set(['/studio/', '/manage-products/']);
+  const returnKey = 'she-login-return';
+
+  function rememberReturnPath() {
+    const params = new URL(location.href).searchParams;
+    if (!params.has('next')) return;
+    try {
+      const path = params.get('next');
+      if (returnPaths.has(path)) sessionStorage.setItem(returnKey, JSON.stringify({ path, expires: Date.now() + 600000 }));
+      else sessionStorage.removeItem(returnKey);
+    } catch { /* Restricted storage never prevents sign-in. */ }
+  }
+
+  function continueToRequestedPage() {
+    try {
+      const target = JSON.parse(sessionStorage.getItem(returnKey) || 'null');
+      sessionStorage.removeItem(returnKey);
+      if (returnPaths.has(target?.path) && target.expires > Date.now()) {
+        location.assign(target.path); return true;
+      }
+    } catch { /* Use the member dashboard when storage is unavailable. */ }
+    return false;
+  }
 
   function explain(error) { return messages[error?.message] || '目前無法完成連線，請稍後重試；現有會員帳號不受影響。'; }
   function cleanQuery(...names) {
@@ -90,6 +113,7 @@ export function setupMemberAuth({ sb, notify, showAccount }) {
       location.replace('https://she.self.com.tw' + location.pathname + location.search);
       return new Promise(() => {});
     }
+    rememberReturnPath();
     selectEmailTab(new URL(location.href).searchParams.get('mode') === 'signup' ? 'signup' : 'login');
     for (const button of document.querySelectorAll('[data-password-toggle]')) {
       button.addEventListener('click', () => {
@@ -206,6 +230,7 @@ export function setupMemberAuth({ sb, notify, showAccount }) {
   }
 
   async function afterSignIn(user) {
+    if (!newLineUser && !pendingSelf && !pendingLine && continueToRequestedPage()) return;
     if (newLineUser || pendingSelf || pendingLine) { showAccount(); newLineUser = false; }
     try { const links = await api('links', undefined, true); selfLinked = links.self_linked; lineLinked = links.line_linked; } catch { selfLinked = false; lineLinked = false; }
     renderSelf(); renderLine();

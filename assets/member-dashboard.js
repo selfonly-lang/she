@@ -1,7 +1,8 @@
 import { setupMemberAuth, POLICY_VERSION } from "/assets/member-auth.js";
 
 import {createClient} from "https://esm.sh/@supabase/supabase-js@2.75.1";
-const sb=createClient("https://tlpsqaywjcgowprhauod.supabase.co","sb_publishable_sQQtebH-fuHcAMm4e4wCPg_xRmac_l-",{auth:{persistSession:true,autoRefreshToken:true}});
+async function memberFetch(input,options={}){const controller=new AbortController(),abort=()=>controller.abort();if(options.signal?.aborted)abort();else options.signal?.addEventListener("abort",abort,{once:true});const timer=setTimeout(abort,15000);try{return await fetch(input,{...options,signal:controller.signal})}finally{clearTimeout(timer);options.signal?.removeEventListener("abort",abort)}}
+const sb=createClient("https://tlpsqaywjcgowprhauod.supabase.co","sb_publishable_sQQtebH-fuHcAMm4e4wCPg_xRmac_l-",{auth:{persistSession:true,autoRefreshToken:true},global:{fetch:memberFetch}});
 let user=null,profile=null,role=null,isMod=false;const q=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 function showAccount(){qa("[data-tab]").forEach(n=>n.classList.toggle("active",n.dataset.tab==="account"));qa("[data-page]").forEach(n=>n.hidden=n.dataset.page!=="account");q("#profile-form").scrollIntoView({block:"start",behavior:"smooth"})}
 const memberAuth=setupMemberAuth({sb,notify,showAccount});
@@ -13,9 +14,10 @@ function notify(s){q("#status").textContent=s;q("#status").style.display="block"
 function check(data){if(data.error)throw data.error;return data.data??[]}
 async function fetchTable(name,query){const r=await query;if(r.error)throw r.error;return r.data||[]}
 async function prepare(){if(!user)return;const [profileResult,st]=await Promise.all([sb.from("she_profiles").select("*").eq("id",user.id).maybeSingle(),sb.from("she_staff_roles").select("role").eq("user_id",user.id).maybeSingle()]);let r=profileResult;if(r.error)throw r.error;if(!r.data){r=await sb.from("she_profiles").insert({id:user.id,display_name:user.user_metadata?.display_name||user.email?.split("@")[0]||"SHE 會員",member_tier:"member"}).select().single();if(r.error)throw r.error}profile=r.data;
-if(st.error)throw st.error;role=st.data?.role||null;isMod=Boolean(role)||profile.member_tier==="manager";
+role=st.error?null:st.data?.role||null;isMod=Boolean(role)||profile.member_tier==="manager";
 q("#auth-panel").classList.add("hidden");q("#app").classList.remove("hidden");q("#logout").classList.remove("hidden");q("#signed-user").textContent=profile.display_name||"SHE 會員";q("#stat-tier").textContent=tiers[profile.member_tier];q("#membership-note").textContent="您的 SHE 會員等級："+tiers[profile.member_tier]+"。跨平台資格須由管理員核實，實際付款與佣金以完成對帳為準。";
 q("#ops-tab").classList.toggle("hidden",!isMod);q("#person-create").classList.toggle("hidden",!(isMod||["business","manager"].includes(profile.member_tier)));
+const productManagement=q('.nav a[href="/manage-products/"]');if(productManagement)productManagement.hidden=!["super_admin","product","finance"].includes(role);
 const form=q("#profile-form");for(const k of ["display_name","city","category","headline","bio"])form.elements[k].value=profile[k]||"";
 memberAuth.renderProfile(user,profile);
 // A slow product/order service must never turn a successful sign-in into a login error.
