@@ -11,7 +11,7 @@
 - she-line-connect reusable skill validated and saved separately in Skills git workspace.
 
 ## Release blockers / remaining business work
-1. Existing anonymous she_people SELECT fails because is_moderator function is not executable by anon. Prior proposed public policy split was rejected by automatic approval. docs/proposed-she-public-people-read.sql is NOT applied; explicit approval needed. No published profiles exist at review time; image examples are labeled illustrative.
+1. RESOLVED 2026-10-21: user explicitly approved anonymous reads of published profiles only. Applied she_published_person_public_read migration; authenticated owner/moderator read policy remains intact. Anonymous REST published/nonpublished requests return 200; nonpublished results are empty and query plan enforces status=published. No published profiles yet.
 2. LINE Login/SELF linking retains existing platform server routes. Need real configured-provider sign-in/callback verification by account owner; no secrets collected in chat. Personal official account contact links are not Messaging API authorization.
 3. Messaging API sending requires tenant-channel secret storage, verified recipient linking across providers, signed webhook validation and an explicitly authorized live send test.
 4. Commercial checkout/referral attribution, commission rates, refund reversal and settlement cycle are not defined. Existing finance records are presented, but no new automatic commission engine or money transfers have been activated. Decide rules before implementing transactional settlement/RPCs.
