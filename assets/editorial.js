@@ -177,4 +177,69 @@
     const observer = new IntersectionObserver(entries => { for (const entry of entries) if (entry.isIntersecting) { entry.target.classList.remove('is-pending'); observer.unobserve(entry.target); } }, { rootMargin: '0px 0px 60px 0px', threshold: .03 });
     for (const element of document.querySelectorAll('.section-top,.team-card,.brand-card')) if (element.getBoundingClientRect().top > innerHeight) { element.classList.add('she-reveal', 'is-pending'); observer.observe(element); }
   }
+
+  // Shared SHE journey: one clearly labeled route on every page, without changing auth or product data.
+  const sheRoutes = [
+    { href: '/', label: '首頁', glyph: '⌂', key: 'home' },
+    { href: '/women/', label: '人物', glyph: '✦', key: 'women' },
+    { href: '/catalog/', label: '選品', glyph: '◇', key: 'catalog' },
+    { href: '/studio/', label: '創作', glyph: '✎', key: 'studio' },
+    { href: '/admin/', label: '我的', glyph: '○', key: 'admin' },
+  ];
+  const routeKey = page === 'people' ? 'women' : page === 'manage-products' ? 'admin' : page;
+  const dock = document.createElement('nav');
+  dock.className = 'she-mobile-dock';
+  dock.setAttribute('aria-label', '手機快速導覽');
+  for (const route of sheRoutes) {
+    const link = document.createElement('a');
+    link.href = route.href;
+    if (route.key === routeKey) link.setAttribute('aria-current', 'page');
+    const icon = document.createElement('span');
+    icon.className = 'she-dock-glyph';
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = route.glyph;
+    const label = document.createElement('span');
+    label.textContent = route.label;
+    link.append(icon, label);
+    dock.append(link);
+  }
+  document.body.append(dock);
+
+  // Official account help is always reachable; it is not a substitute for LINE Login.
+  const lineHelp = document.createElement('a');
+  lineHelp.className = 'she-line-help';
+  lineHelp.href = 'https://line.me/R/ti/p/@673opbay';
+  lineHelp.target = '_blank';
+  lineHelp.rel = 'noopener noreferrer';
+  lineHelp.setAttribute('aria-label', '聯繫 SHE 官方 LINE 客服（另開視窗）');
+  lineHelp.innerHTML = '<span class="she-line-dot" aria-hidden="true"></span><span>LINE 諮詢</span><span aria-hidden="true">↗</span>';
+  document.body.append(lineHelp);
+
+  const journey = {
+    women: ['想讓妳的故事也被看見？', '建立我的時尚專頁', '/studio/'],
+    people: ['探索更多女性故事與合作機會', '返回女性人物', '/women/'],
+    catalog: ['挑選品牌後，可詢問會員服務及商品細節', '諮詢官方 LINE', 'https://line.me/R/ti/p/@673opbay'],
+    studio: ['先登入或註冊，再保存與發佈妳的作品', '前往會員中心', '/admin/?next=%2Fstudio%2F'],
+    'manage-products': ['商品管理完成後，回到公開頁檢查展示', '查看品牌精選', '/catalog/'],
+    admin: ['建立個人時尚專頁，從會員服務開始', '開始創作', '/studio/'],
+    policies: ['完成條款閱讀後，返回會員登入或註冊', '前往會員中心', '/admin/'],
+  };
+  if (journey[page]) {
+    const [description, label, href] = journey[page];
+    const region = document.querySelector('.she-page-heading') || (page === 'admin' ? document.querySelector('.she-member-heading') : null);
+    if (region && !document.querySelector('.she-journey')) {
+      const next = document.createElement('div');
+      next.className = 'she-journey';
+      const note = document.createElement('span');
+      note.textContent = description;
+      const link = document.createElement('a');
+      link.className = 'she-journey-action';
+      link.href = href;
+      link.textContent = label + ' ↗';
+      if (href.startsWith('https://')) { link.target = '_blank'; link.rel = 'noopener noreferrer'; }
+      next.append(note, link);
+      region.after(next);
+    }
+  }
+
 })();
