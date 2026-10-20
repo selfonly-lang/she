@@ -7,6 +7,7 @@
     ['/', '首頁', 'home'], ['/women/', '女性人物', 'women'],
     ['/#story', '女力觀點', 'story'], ['/catalog/', '品牌精選', 'catalog'],
     ['/studio/', '創作專頁', 'studio'], ['/admin/', '會員中心', 'admin'],
+    ['/line/', '官方 LINE', 'line'],
   ];
   const active = page === 'people' ? 'women' : page === 'manage-products' ? 'admin' : page;
   const legacyHeader = document.querySelector('body > header:not(.she-masthead)');
@@ -21,6 +22,13 @@
     const a = document.createElement('a'); a.href = href; a.textContent = label;
     if (key === active) a.setAttribute('aria-current', 'page');
     links.append(a);
+  }
+  if (![...links.querySelectorAll('a')].some(link => new URL(link.href, location.origin).pathname === '/line/')) {
+    const lineHub = document.createElement('a');
+    lineHub.href = '/line/';
+    lineHub.textContent = '官方 LINE';
+    if (page === 'line') lineHub.setAttribute('aria-current', 'page');
+    links.append(lineHub);
   }
   masthead.append(links);
   if (!existingMasthead) document.body.prepend(masthead);
@@ -165,7 +173,7 @@
     }
   }
   const footer = document.querySelector('.she-footer') || document.createElement('footer'); footer.className = 'she-footer';
-  footer.innerHTML = '<div class="she-footer-top"><div><a class="she-footer-brand" href="/">SHE</a><p class="she-footer-tagline">Style. Her. Empire.</p><p class="she-footer-label">THE ENTREPRENEUR EDIT</p></div><div><p class="she-footer-label">EXPLORE</p><nav class="she-footer-links" aria-label="探索 SHE"><a href="/women/">女性人物</a><a href="/catalog/">品牌精選</a><a href="/studio/">創作專頁</a></nav></div><div><p class="she-footer-label">CONNECT</p><nav class="she-footer-links" aria-label="聯絡與會員"><a href="/admin/">會員中心</a><a href="https://line.me/R/ti/p/@673opbay" target="_blank" rel="noopener noreferrer">官方 LINE ↗</a><a href="/policies/">會員條款與資料使用</a></nav></div></div><div class="she-footer-bottom"><span>SHE · 女性時尚與事業平台</span><span>A SELF COMMUNITY</span></div><div class="she-footer-tools"></div>';
+  footer.innerHTML = '<div class="she-footer-top"><div><a class="she-footer-brand" href="/">SHE</a><p class="she-footer-tagline">Style. Her. Empire.</p><p class="she-footer-label">THE ENTREPRENEUR EDIT</p></div><div><p class="she-footer-label">EXPLORE</p><nav class="she-footer-links" aria-label="探索 SHE"><a href="/women/">女性人物</a><a href="/catalog/">品牌精選</a><a href="/studio/">創作專頁</a></nav></div><div><p class="she-footer-label">CONNECT</p><nav class="she-footer-links" aria-label="聯絡與會員"><a href="/admin/">會員中心</a><a href="/line/">LINE 官方專區</a><a href="https://line.me/R/ti/p/@673opbay" target="_blank" rel="noopener noreferrer">官方 LINE ↗</a><a href="/policies/">會員條款與資料使用</a></nav></div></div><div class="she-footer-bottom"><span>SHE · 女性時尚與事業平台</span><span>A SELF COMMUNITY</span></div><div class="she-footer-tools"></div>';
   const tools = footer.querySelector('.she-footer-tools');
   for (const selector of ['.read-controls', '.demo-label']) { const node = document.querySelector(selector); if (node) tools.append(node); }
   document.body.append(footer);
