@@ -4,9 +4,9 @@ const messages = {
   consent_required: '請先閱讀並勾選會員條款與資料使用說明。',
   invalid_transaction: '登入連結已失效，請重新開始 LINE 登入。',
   not_configured: '這項登入服務正在準備中，請先使用電子郵件登入。',
-  identity_conflict: '這個會員身分已連結其他帳號，請透過官方 LINE 聯絡我們協助核對。',
+  identity_conflict: '這個登入身分已連結其他 SHE 帳號，請登入原帳號或聯絡 SHE 平台管理員協助核對。',
   account_changed: '目前 SHE 帳號與開始連結時不同，請登入原帳號再確認。',
-  sign_in_required: '請先登入 SHE，再連結 SELF 會員。',
+  sign_in_required: '請先登入 SHE 原帳號，再連結登入身分。',
 };
 
 export function setupMemberAuth({ sb, notify, showAccount }) {
@@ -96,6 +96,16 @@ export function setupMemberAuth({ sb, notify, showAccount }) {
   function clearPasswords() {
     for (const input of document.querySelectorAll('#auth-panel input[name="password"]')) input.value = '';
     for (const button of document.querySelectorAll('[data-password-toggle]')) hidePassword(button);
+  }
+
+  async function signOut() {
+    // Clear HttpOnly OAuth cookies before ending the SHE session. These are
+    // independent from both Supabase storage and official-account links.
+    await api('cancel', {});
+    const { error } = await sb.auth.signOut();
+    if (error) throw error;
+    try { sessionStorage.removeItem(returnKey); } catch { /* optional storage */ }
+    location.replace('/admin/');
   }
 
   async function refreshFeatures() {
@@ -236,5 +246,5 @@ export function setupMemberAuth({ sb, notify, showAccount }) {
     renderSelf(); renderLine();
   }
 
-  return { initialize, afterSignIn, renderProfile, showAccount, selectEmailTab, clearPasswords, explain };
+  return { initialize, afterSignIn, renderProfile, showAccount, selectEmailTab, clearPasswords, explain, signOut };
 }

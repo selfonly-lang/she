@@ -62,7 +62,9 @@ function fixture(overrides = {}) {
           return response({}, 409);
         }
         if (f.identities.some(row => row.provider === data.provider && (row.subject === data.subject || row.user_id === data.user_id))) return response({}, 409);
-        f.identities.push(data); return response([], 201);
+        f.identities.push(data);
+        if (f.identityCommittedThenFailed) { f.identityCommittedThenFailed = false; return response({}, 503); }
+        return response([], 201);
       }
       let rows = f.identities;
       for (const field of ['provider', 'subject', 'user_id']) {
@@ -79,9 +81,19 @@ function fixture(overrides = {}) {
       if (method === 'DELETE') { f.users.delete(id); return response({}); }
       return f.users.has(id) ? response(f.users.get(id)) : response({}, 404);
     }
-    if (path === '/rest/v1/she_profiles' && method === 'POST') { f.profiles.push(data); return response([], 201); }
+    if (path === '/rest/v1/she_profiles' && method === 'POST') {
+      assert.equal(headers.get('Prefer'), 'resolution=ignore-duplicates');
+      if (f.profileFailure) { f.profileFailure = false; return response({}, 503); }
+      if (!f.profiles.some(row => row.id === data.id)) f.profiles.push(data);
+      return response([], 201);
+    }
     if (path === '/rest/v1/she_consents') {
-      if (method === 'POST') { f.consents.push(data); return response([], 201); }
+      if (method === 'POST') {
+        assert.equal(url.searchParams.get('on_conflict'), 'user_id,policy_version');
+        assert.equal(headers.get('Prefer'), 'resolution=ignore-duplicates');
+        if (!f.consents.some(row => row.user_id === data.user_id && row.policy_version === data.policy_version)) f.consents.push(data);
+        return response([], 201);
+      }
       return response(f.consents.filter(row => row.user_id === url.searchParams.get('user_id').slice(3)));
     }
     if (path === '/auth/v1/admin/generate_link') {
@@ -259,7 +271,7 @@ test('a racing first sign-in preserves the winning identity and removes only its
   assert.equal(callback.headers.location, '/admin/?line=complete');
   assert.equal(f.users.size, 2);
   assert.equal(f.identities[0].user_id, EXISTING);
-  assert.equal(f.profiles.length, 0);
+  assert.equal(f.profiles.length, 1);
 });
 
 test('existing Email account can explicitly link LINE without creating a second account or session', async () => {
@@ -324,4 +336,68 @@ test('link status requires authentication and reveals no provider subjects or me
   const result = await call(f, 'links', { method: 'GET', auth: 'TEST_ONLY_EXISTING_SESSION' });
   assert.deepEqual(result.body, { line_linked: false, self_linked: true });
   assert.ok(!result.text.includes(EXISTING) && !result.text.includes(SELF_ID));
+});
+
+test('an ambiguous identity write failure never deletes a possibly committed member; retry repairs profile', async () => {
+  const f = fixture({ identityCommittedThenFailed: true });
+  assert.equal((await lineCallback(f, await startLine(f))).headers.location, '/admin/?auth_error=unavailable');
+  const uid = f.identities[0].user_id;
+  assert.ok(f.users.has(uid));
+  assert.ok(!f.events.some(e => e.method === 'DELETE'));
+  const callback = await lineCallback(f, await startLine(f));
+  assert.equal(callback.headers.location, '/admin/?line=complete');
+  assert.equal(f.identities.length, 1);
+  assert.equal(f.profiles[0].id, uid);
+  assert.equal(f.users.size, 3);
+});
+
+test('retry repairs an interrupted profile creation without a second identity', async () => {
+  const f = fixture({ profileFailure: true });
+  assert.equal((await lineCallback(f, await startLine(f))).headers.location, '/admin/?auth_error=unavailable');
+  const uid = f.identities[0].user_id;
+  assert.equal((await lineCallback(f, await startLine(f))).headers.location, '/admin/?line=complete');
+  assert.equal(f.profiles[0].id, uid);
+  assert.equal(f.identities.length, 1);
+});
+
+test('repeated login keeps one consent and preserves all membership tiers and profile data', async () => {
+  for (const tier of ['member', 'paid', 'business', 'manager']) {
+    const profile = { id: EXISTING, member_tier: tier, display_name: '原姓名', city: '台北', bio: '私人資料' };
+    const f = fixture({ profiles: [{ ...profile }] });
+    f.identities.push({ provider: 'line', subject: f.sub, user_id: EXISTING });
+    for (let i = 0; i < 2; i++) {
+      const callback = await lineCallback(f, await startLine(f));
+      assert.equal((await call(f, 'line-complete', { cookie: getCookie(callback, '__Host-she_auth_finish') })).status, 200);
+    }
+    assert.deepEqual(f.profiles, [profile]);
+    assert.equal(f.consents.length, 1);
+    assert.equal(f.identities.length, 1);
+    assert.ok(!f.events.some(e => /she_(prices|people|member_line_settings|staff_roles)/.test(e.url.pathname)));
+  }
+});
+
+test('LINE linking cannot replace the current member existing LINE identity', async () => {
+  const f = fixture();
+  f.identities.push({ provider: 'line', subject: 'another-subject', user_id: EXISTING });
+  const callback = await lineCallback(f, await startLine(f, true));
+  const result = await call(f, 'line-complete', { cookie: getCookie(callback, '__Host-she_auth_finish'), auth: 'TEST_ONLY_EXISTING_SESSION' });
+  assert.equal(result.status, 409);
+  assert.equal(f.identities[0].subject, 'another-subject');
+});
+
+test('link status is isolated to the authenticated member, ignoring user-supplied IDs', async () => {
+  const f = fixture();
+  f.identities.push({ provider: 'line', subject: f.sub, user_id: EXISTING });
+  const result = await call(f, 'links', { method: 'GET', auth: 'TEST_ONLY_OTHER_SESSION', extra: '&user_id=' + EXISTING });
+  assert.deepEqual(result.body, { line_linked: false, self_linked: false });
+});
+
+test('cancel clears both OAuth cookies even without configuration, with same-origin protection', async () => {
+  const f = fixture({ env: { SHE_SUPABASE_SERVICE_ROLE_KEY: undefined } });
+  assert.equal((await call(f, 'cancel', { origin: 'https://other.invalid' })).status, 403);
+  const result = await call(f, 'cancel');
+  assert.deepEqual(result.body, { cleared: true });
+  assert.equal(result.headers['set-cookie'].length, 2);
+  for (const value of result.headers['set-cookie']) assert.match(value, /Max-Age=0; HttpOnly; Secure; SameSite=Lax/);
+  assert.equal(f.events.length, 0);
 });
