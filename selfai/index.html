@@ -49,7 +49,9 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-
 .dialwrap.drag{transition:none}
 .dragtip{position:absolute;left:50%;top:-6px;transform:translateX(-50%);color:rgba(255,255,255,.7);font-size:10px;letter-spacing:.14em;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.5);opacity:0;transition:opacity .5s}
 .dialwrap.drag .dragtip{opacity:1}
-.dial{position:relative;width:min(88vw,380px);aspect-ratio:1/1;max-width:100%;touch-action:pan-x;user-select:none;-webkit-user-select:none}
+.dial{position:relative;width:min(88vw,380px);aspect-ratio:1/1;max-width:100%;touch-action:pan-x;user-select:none;-webkit-user-select:none;pointer-events:none}
+.dialwrap{pointer-events:none}
+.dial .orbwrap,.dial .chatbtn,.dialwrap .tap{pointer-events:auto}
 .arc{position:absolute;inset:8%;border-radius:50%;border:1px solid rgba(255,235,220,0);transition:border-color 1s var(--ease),box-shadow 1s var(--ease)}
 .hero.menu .arc{border-color:rgba(255,235,220,.3);box-shadow:inset 0 0 70px rgba(255,220,200,.14)}
 .node{position:absolute;width:64px;left:50%;top:60%;transform:translate(-50%,-50%) scale(.3);opacity:0;pointer-events:none;text-align:center;color:var(--ink);text-shadow:0 1px 8px rgba(0,0,0,.45);text-decoration:none;transition:transform 1.5s var(--ease),opacity 1.1s var(--ease),left 1.5s var(--ease),top 1.5s var(--ease),filter .3s;transition-delay:var(--d,0s)}
@@ -187,8 +189,8 @@ nav.bar .in{pointer-events:auto;width:100%;max-width:480px;background:rgba(30,20
 @keyframes kenburns{to{transform:scale(1.1) translateY(-1.5%)}}
 .slide.talking .photo{animation:kenburns 18s ease-in-out infinite alternate,breathe2 1.1s ease-in-out infinite}
 @keyframes breathe2{50%{filter:brightness(1.04)}}
-.slide .empty{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 20%,#3a2a33,#17120f 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--ink);text-align:center;padding:0 32px;pointer-events:auto}
-.slide .empty .sil{width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 40% 30%,rgba(255,255,255,.25),rgba(255,255,255,.04) 70%);border:1px dashed rgba(255,235,220,.5);display:grid;place-items:center;font-size:54px;color:var(--gold);animation:breathe 5s ease-in-out infinite}
+.slide .empty{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 20%,#3a2a33,#17120f 70%);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;color:var(--ink);text-align:center;padding:calc(228px + env(safe-area-inset-top,0px)) 32px 0;pointer-events:auto}
+.slide .empty .sil{width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 40% 30%,rgba(255,255,255,.25),rgba(255,255,255,.04) 70%);border:1px dashed rgba(255,235,220,.5);display:grid;place-items:center;font-size:26px;color:var(--gold);animation:breathe 5s ease-in-out infinite}
 .slide .empty b{font-family:var(--cjk);font-size:20px;letter-spacing:.1em}
 .slide .empty .note{color:rgba(255,255,255,.7)}
 .slide .empty .btn{width:auto;padding:12px 26px;min-height:48px;font-size:16px}
@@ -415,7 +417,7 @@ function Home({go,profile,setProfile}){
     if(hold&&menu) setHot(nodeAt(e.clientX,e.clientY)); }
   function up(e){ setPress(false); const d=dragRef.current; dragRef.current=null;
     if(d&&d.moved){ setDrag(false); try{ localStorage.setItem("dialpos",JSON.stringify(pos)); }catch(e2){} thump(50,.4,.35); buzz(15); return; }
-    if(timer.current){ clearTimeout(timer.current); timer.current=null; setTimeout(toggleMenu,140); return; }
+    if(timer.current){ clearTimeout(timer.current); timer.current=null; if(A.k==="mine"&&!profile.photo){ SFX.open(); buzz(12); go("create"); return; } setTimeout(toggleMenu,140); return; }
     const n=hold&&menu?nodeAt(e.clientX,e.clientY):null; setHold(false); setHot(null);
     if(n){ stopListen(); setState("idle"); runNode(NODES.find(x=>x.k===n)); return; }
     stopListen(); }
@@ -506,7 +508,7 @@ function Create({go,profile,setProfile}){
     setBusyMsg("建立分身中…");
     const vv=VOICES.find(v=>v.k===voice)||VOICES[0];
     try{ await api("profile",{patch:{member_name:me||null,avatar_name:p.avatarName,age:p.age,senior:!!senior,voice:vv.k==="soft"?"zh-TW-HsiaoYuNeural":"zh-TW-HsiaoChenNeural",rate:(senior?"-15%":vv.k==="soft"?"-10%":"-5%"),variant,goals:p.goals,consent_version:"1.2",consented_at:new Date().toISOString()}},20000); }catch(e){}
-    setProfile(p); await saveDoc("profile",p); try{ localStorage.setItem("av","0"); }catch(e){}
+    setProfile(p); await saveDoc("profile",p); await saveDoc("chat",{msgs:[]}); try{ localStorage.setItem("av","0"); }catch(e){}
     /* 入會驚豔片（OmniHuman）：背景生成，完成後首頁自動換成會開口的影片 */
     try{ const g=await api("render",{kind:"greeting",text:`${me?me+"，":""}我是${p.avatarName}，理想中的你。從今天開始，我每天陪你，一起慢慢變成她。`},30000); if(g.render_id){ p.greetRender=g.render_id; await saveDoc("profile",p); setProfile({...p}); } }catch(e){ p.greetErr=String(e.message||e).slice(0,80); p.greetTry=Date.now(); await saveDoc("profile",p); setProfile({...p}); }
     setBusy(false); SFX.open(); buzz([20,40,20]); go("home"); }
