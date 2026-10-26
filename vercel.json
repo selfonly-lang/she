@@ -8,10 +8,38 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
+    },
+    {
+      "source": "/selfai/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
+    },
+    {
+      "source": "/selfai/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
     }
   ],
   "buildCommand": "npm run build",
   "rewrites": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "my.self.com.tw"
+        }
+      ],
+      "destination": "/selfai/:path*"
+    },
     {
       "source": "/s/:slug",
       "destination": "/legacy-magazine.html"
