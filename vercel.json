@@ -14,11 +14,11 @@
   "rewrites": [
     {
       "source": "/s/:slug",
-      "destination": "/index.html"
+      "destination": "/legacy-magazine.html"
     },
     {
       "source": "/c/:slug",
-      "destination": "/index.html"
+      "destination": "/legacy-magazine.html"
     }
   ]
 }

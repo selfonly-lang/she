@@ -1,0 +1,362 @@
+{
+  "home": {
+    "zh-Hant": "首頁",
+    "en": "Home"
+  },
+  "people": {
+    "zh-Hant": "探索人物",
+    "en": "Discover"
+  },
+  "journal": {
+    "zh-Hant": "人物誌",
+    "en": "Journal"
+  },
+  "tv": {
+    "zh-Hant": "SHE TV",
+    "en": "SHE TV"
+  },
+  "events": {
+    "zh-Hant": "活動",
+    "en": "Gatherings"
+  },
+  "join": {
+    "zh-Hant": "加入 SHE",
+    "en": "Join SHE"
+  },
+  "workspace": {
+    "zh-Hant": "我的工作台",
+    "en": "My studio"
+  },
+  "language": {
+    "zh-Hant": "語言",
+    "en": "Language"
+  },
+  "preview": {
+    "zh-Hant": "獨立互動測試版・所有人物與數據為示意",
+    "en": "Independent prototype · Illustrative profiles & data"
+  },
+  "guide": {
+    "zh-Hant": "測試指南",
+    "en": "Test guide"
+  },
+  "save": {
+    "zh-Hant": "儲存草稿",
+    "en": "Save draft"
+  },
+  "submit": {
+    "zh-Hant": "送交審核",
+    "en": "Submit for review"
+  },
+  "name": {
+    "zh-Hant": "公開顯示名稱",
+    "en": "Public display name"
+  },
+  "email": {
+    "zh-Hant": "測試 Email",
+    "en": "Test email"
+  },
+  "next": {
+    "zh-Hant": "下一步",
+    "en": "Continue"
+  },
+  "back": {
+    "zh-Hant": "上一步",
+    "en": "Back"
+  },
+  "cancel": {
+    "zh-Hant": "取消",
+    "en": "Cancel"
+  },
+  "close": {
+    "zh-Hant": "關閉",
+    "en": "Close"
+  },
+  "follow": {
+    "zh-Hant": "追蹤",
+    "en": "Follow"
+  },
+  "following": {
+    "zh-Hant": "已追蹤",
+    "en": "Following"
+  },
+  "bookmark": {
+    "zh-Hant": "收藏",
+    "en": "Save"
+  },
+  "saved": {
+    "zh-Hant": "已收藏",
+    "en": "Saved"
+  },
+  "share": {
+    "zh-Hant": "分享",
+    "en": "Share"
+  },
+  "report": {
+    "zh-Hant": "檢舉",
+    "en": "Report"
+  },
+  "all": {
+    "zh-Hant": "全部",
+    "en": "All"
+  },
+  "entrepreneur": {
+    "zh-Hant": "企業家",
+    "en": "Entrepreneur"
+  },
+  "contestant": {
+    "zh-Hant": "佳麗",
+    "en": "Pageant talent"
+  },
+  "creator": {
+    "zh-Hant": "創作者",
+    "en": "Creator"
+  },
+  "professional": {
+    "zh-Hant": "專業人士",
+    "en": "Professional"
+  },
+  "demo": {
+    "zh-Hant": "示意人物・非真實會員",
+    "en": "Illustrative profile · Not a real member"
+  },
+  "draft": {
+    "zh-Hant": "草稿",
+    "en": "Draft"
+  },
+  "review": {
+    "zh-Hant": "送審中",
+    "en": "In review"
+  },
+  "changes": {
+    "zh-Hant": "需修改",
+    "en": "Changes requested"
+  },
+  "published": {
+    "zh-Hant": "已發布",
+    "en": "Published"
+  },
+  "withdrawn": {
+    "zh-Hant": "已撤下",
+    "en": "Withdrawn"
+  },
+  "location": {
+    "zh-Hant": "公開所在地",
+    "en": "Public location"
+  },
+  "bio": {
+    "zh-Hant": "個人介紹",
+    "en": "Biography"
+  },
+  "headline": {
+    "zh-Hant": "專業標題",
+    "en": "Headline"
+  },
+  "country": {
+    "zh-Hant": "國籍（不公開）",
+    "en": "Nationality (private)"
+  },
+  "residence": {
+    "zh-Hant": "居住地",
+    "en": "Country of residence"
+  },
+  "timezone": {
+    "zh-Hant": "時區",
+    "en": "Time zone"
+  },
+  "phone": {
+    "zh-Hant": "聯絡電話（選填，不公開）",
+    "en": "Phone (optional, private)"
+  },
+  "role": {
+    "zh-Hant": "人物身分",
+    "en": "Profile roles"
+  },
+  "original": {
+    "zh-Hant": "原文姓名",
+    "en": "Original name"
+  },
+  "url": {
+    "zh-Hant": "公開網址代稱",
+    "en": "Public URL slug"
+  },
+  "mainlang": {
+    "zh-Hant": "主要內容語言",
+    "en": "Primary content language"
+  },
+  "invitations": {
+    "zh-Hant": "合作邀請",
+    "en": "Invitations"
+  },
+  "settings": {
+    "zh-Hant": "帳號與隱私",
+    "en": "Account & privacy"
+  },
+  "content": {
+    "zh-Hant": "內容管理",
+    "en": "Content"
+  },
+  "profile": {
+    "zh-Hant": "編輯專頁",
+    "en": "Edit profile"
+  },
+  "overview": {
+    "zh-Hant": "經營總覽",
+    "en": "Overview"
+  },
+  "admin": {
+    "zh-Hant": "審核模擬",
+    "en": "Review sandbox"
+  },
+  "spec": {
+    "zh-Hant": "系統規格",
+    "en": "System blueprint"
+  },
+  "accept": {
+    "zh-Hant": "接受",
+    "en": "Accept"
+  },
+  "decline": {
+    "zh-Hant": "婉拒",
+    "en": "Decline"
+  },
+  "more": {
+    "zh-Hant": "要求補充",
+    "en": "Ask for details"
+  },
+  "block": {
+    "zh-Hant": "封鎖",
+    "en": "Block"
+  },
+  "accepted": {
+    "zh-Hant": "已接受",
+    "en": "Accepted"
+  },
+  "declined": {
+    "zh-Hant": "已婉拒",
+    "en": "Declined"
+  },
+  "details": {
+    "zh-Hant": "待補充",
+    "en": "Awaiting details"
+  },
+  "blocked": {
+    "zh-Hant": "已封鎖",
+    "en": "Blocked"
+  },
+  "pending": {
+    "zh-Hant": "待處理",
+    "en": "Pending"
+  },
+  "send": {
+    "zh-Hant": "送出模擬邀請",
+    "en": "Send demo invitation"
+  },
+  "required": {
+    "zh-Hant": "請完成必填欄位。",
+    "en": "Please complete the required fields."
+  },
+  "local": {
+    "zh-Hant": "資料僅儲存在此瀏覽器；請使用虛構資料，不要輸入證件或密碼。",
+    "en": "Stored in this browser only. Use fictional information. Do not enter identity documents or passwords."
+  },
+  "unconnected": {
+    "zh-Hant": "待正式串接",
+    "en": "Not connected"
+  },
+  "on": {
+    "zh-Hant": "開啟",
+    "en": "On"
+  },
+  "off": {
+    "zh-Hant": "關閉",
+    "en": "Off"
+  },
+  "motion": {
+    "zh-Hant": "減少動態",
+    "en": "Reduce motion"
+  },
+  "reset": {
+    "zh-Hant": "重設測試資料",
+    "en": "Reset demo data"
+  },
+  "logout": {
+    "zh-Hant": "結束模擬登入",
+    "en": "End demo session"
+  },
+  "empty": {
+    "zh-Hant": "目前沒有內容",
+    "en": "Nothing here yet"
+  },
+  "public": {
+    "zh-Hant": "公開",
+    "en": "Public"
+  },
+  "private": {
+    "zh-Hant": "私人",
+    "en": "Private"
+  },
+  "previewpage": {
+    "zh-Hant": "預覽專頁",
+    "en": "Preview profile"
+  },
+  "editorial": {
+    "zh-Hant": "編輯式人物誌",
+    "en": "Editorial"
+  },
+  "portfolio": {
+    "zh-Hant": "作品集",
+    "en": "Portfolio"
+  },
+  "service": {
+    "zh-Hant": "專業服務",
+    "en": "Professional"
+  },
+  "view": {
+    "zh-Hant": "查看",
+    "en": "View"
+  },
+  "verification": {
+    "zh-Hant": "本人自述・未查核",
+    "en": "Self-reported · Unverified"
+  },
+  "read": {
+    "zh-Hant": "閱讀故事",
+    "en": "Read story"
+  },
+  "search": {
+    "zh-Hant": "搜尋姓名、專業或關鍵字",
+    "en": "Search name, expertise or keyword"
+  },
+  "clear": {
+    "zh-Hant": "清除篩選",
+    "en": "Clear filters"
+  },
+  "edit": {
+    "zh-Hant": "編輯",
+    "en": "Edit"
+  },
+  "activity": {
+    "zh-Hant": "最新動態",
+    "en": "Latest updates"
+  },
+  "privacy": {
+    "zh-Hant": "隱私與使用說明",
+    "en": "Privacy & terms"
+  },
+  "test": {
+    "zh-Hant": "測試",
+    "en": "Demo"
+  },
+  "download": {
+    "zh-Hant": "下載規劃文件",
+    "en": "Download blueprint"
+  },
+  "gallery": {
+    "zh-Hant": "作品集",
+    "en": "Selected work"
+  },
+  "contact": {
+    "zh-Hant": "邀請合作",
+    "en": "Invite to collaborate"
+  }
+}

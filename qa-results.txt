@@ -1,0 +1,8 @@
+v2 — 2026-10-26
+21 React magazine DOM checks passed.
+Original cover/fan/rail/chapter structure, premium signature card, role filter, bilingual text, dedicated media chapters, live catalog entry, member registration handoff, translation fallback, host sync and reduced motion checked.
+No visual browser or device verification in this environment.
+
+13 integration DOM checks passed.
+Registration, bilingual preservation, review snapshot, invitations, magazine routing and cross-frame actions checked.
+No visual/device verification.
