@@ -156,6 +156,11 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-
 .row .btn{width:auto;min-height:46px;padding:8px 18px;font-size:15px}
 .btn{appearance:none;border:0;border-radius:999px;background:linear-gradient(135deg,var(--rose),var(--plum));color:#fff;font:inherit;font-size:17px;font-weight:700;padding:14px 22px;width:100%;cursor:pointer;min-height:54px;box-shadow:0 10px 24px rgba(199,109,138,.35)}
 .btn.ghost{background:var(--paper-solid);color:var(--fg);border:1px solid var(--line);box-shadow:none;font-weight:500}
+.btn.line{background:#06C755;color:#fff;box-shadow:0 10px 24px rgba(6,199,85,.28)}.btn.line i{display:inline-block;width:22px;height:22px;border-radius:6px;background:#fff;color:#06C755;font-style:normal;font-size:12px;font-weight:900;line-height:22px;text-align:center;margin-right:8px;vertical-align:-5px}
+.btn[disabled]{opacity:.55;pointer-events:none}
+.mcard{display:flex;align-items:center;gap:12px}.mcard .ini{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold2),var(--rose));display:grid;place-items:center;font-family:var(--cjk);font-weight:700;color:var(--plum);font-size:18px;flex:none;overflow:hidden}.mcard .ini img{width:100%;height:100%;object-fit:cover}
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:60;max-width:min(92vw,420px);background:var(--paper-solid);border:1px solid var(--line);border-radius:16px;padding:12px 16px;font-family:var(--cjk);font-size:15px;line-height:1.5;color:var(--fg);box-shadow:0 14px 34px rgba(90,46,69,.18);animation:toastin .5s cubic-bezier(.2,.8,.2,1)}.toast.err{border-color:var(--rose)}
+@keyframes toastin{from{opacity:0;transform:translate(-50%,-12px)}to{opacity:1;transform:translate(-50%,0)}}
 .btn:focus-visible,.chip:focus-visible,.orb:focus-visible,.tab:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 .live{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);justify-content:center;min-height:20px}
 .live i{width:8px;height:8px;border-radius:50%;background:var(--muted)}
@@ -277,8 +282,21 @@ const API="https://lfhhiwubapkgrtgkqryd.supabase.co/functions/v1/selfai";
 const DEVICE=(()=>{ try{ let d=localStorage.getItem("selfai_device"); if(!d){ d=(crypto.randomUUID?crypto.randomUUID():("d"+Date.now()+Math.random().toString(16).slice(2))); localStorage.setItem("selfai_device",d); } return d; }catch(e){ return "anon-"+Date.now(); } })();
 async function api(action,body={},ms=90000){ const ctl=new AbortController(); const t=setTimeout(()=>ctl.abort(),ms);
   try{ const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action,device_id:DEVICE,...body}),signal:ctl.signal}); const d=await r.json(); if(d&&d.error) throw new Error(d.error); return d; } finally{ clearTimeout(t); } }
-const Store={ready:false};
+const Store={ready:false,requirePaid:false,upgradeUrl:"https://www.self.com.tw/"};
 async function storeInit(){ Store.ready=true; }
+/* ---- 己美會員登入（self.com.tw OAuth，LINE／Email／手機）：登入後分身跟著帳號走，換手機也在 ---- */
+const Member={ get(){ try{ return JSON.parse(localStorage.getItem("member"))||null; }catch(e){ return null; } }, set(m){ try{ m?localStorage.setItem("member",JSON.stringify(m)):localStorage.removeItem("member"); }catch(e){} } };
+async function memberLogin(connection){ try{ const r=await api("self_login",{return_to:location.origin+location.pathname,connection},15000); if(r.url){ try{ sessionStorage.setItem("selfai_login","1"); }catch(e){} location.href=r.url; return true; } }catch(e){} return false; }
+async function memberLogout(){ try{ await api("self_logout",{},10000); }catch(e){} Member.set(null); }
+/* 回跳 ?code=&state= → 後端驗證並綁定；若會員在別台已有分身（或登入從主畫面 PWA 發起），改用那個 device_id 後整頁重載 */
+async function handleCallback(){ const q=new URLSearchParams(location.search); const code=q.get("code"), state=q.get("state"), err=q.get("error"); if(!code&&!err) return null;
+  const clean=location.origin+location.pathname; history.replaceState(null,"",clean);
+  if(err) return {error:err};
+  let r=null; try{ r=await api("self_callback",{code,state},20000); }catch(e){ r={error:String(e.message||e)}; }
+  if(r&&r.member){ Member.set(r.member); Store.requirePaid=!!r.require_paid; if(r.upgrade_url) Store.upgradeUrl=r.upgrade_url;
+    if(r.adopt_device&&r.adopt_device!==DEVICE){ try{ localStorage.setItem("selfai_device",r.adopt_device); ["doc:profile","doc:chat","doc:checkins","av","dialpos"].forEach(k=>localStorage.removeItem(k)); sessionStorage.setItem("selfai_open","me"); }catch(e){} location.reload(); return {reload:true}; } }
+  return r; }
+const isGate=m=>/login_required|paid_required/.test(String(m||""));
 /* 以本機快取為先（開頁即顯示），背景同步雲端 */
 async function loadDoc(name,fallback){ let local=null; try{ const v=localStorage.getItem("doc:"+name); if(v) local=JSON.parse(v); }catch(e){}
   try{ const r=await api("kv_get",{key:name},8000); if(r&&r.value!=null){ try{ localStorage.setItem("doc:"+name,JSON.stringify(r.value)); }catch(e){} return r.value; } }catch(e){}
@@ -396,11 +414,13 @@ function Home({go,profile,setProfile}){
   function switchAv(i){ if(i<0||i>=AVATARS.length||i===av) return; SFX.swipe(); buzz(12); stopSpeak(); setState("idle"); setAv(i); const a=AVATARS[i]; const g=(a.k==="mine"||a.k==="twin")?greetingFor(profile,streak,mood):a.greet; setMsgs([{r:"ai",t:g,av:a.k}]); setMenu(false); }
 
   async function ask(t){ if(!t) return; if(A.k==="mine"&&!profile.photo){ go("create"); return; } setOpen(true); setMenu(false); SFX.send(); buzz([10,30,10]); setMsgs(m=>[...m,{r:"me",t,av:A.k}]); setState("think");
-    let r=null, audio=null;
-    try{ const o=await api("chat",{avatar_key:A.k,text:t,system:A.sys,memory:memoryPrompt(profile,mood),history:msgs.slice(-8).map(x=>({role:x.r==="ai"?"assistant":"user",content:x.t}))}); r=(o.reply||"").trim(); audio=o.audio_url||null; }catch(e){}
+    let r=null, audio=null, gate=null;
+    try{ const o=await api("chat",{avatar_key:A.k,text:t,system:A.sys,memory:memoryPrompt(profile,mood),history:msgs.slice(-8).map(x=>({role:x.r==="ai"?"assistant":"user",content:x.t}))}); r=(o.reply||"").trim(); audio=o.audio_url||null; }
+    catch(e){ const m=String(e.message||e); if(isGate(m)){ gate=m; r=/paid/.test(m)?"這是付費會員才有的陪伴。到「我的」升級之後，我就能每天陪你。":"先到「我的」用己美會員登入，我才記得你是誰。我帶你過去。"; } }
     if(!r) r="網路有點慢，我剛剛沒聽清楚。可以再說一次嗎？";
     SFX.reply(); setMsgs(m=>[...m,{r:"ai",t:r,av:A.k}]);
-    if(audio) playUrl(audio,()=>setState("talk"),()=>setState("idle")); else speak(r,()=>setState("talk"),()=>setState("idle")); }
+    if(audio) playUrl(audio,()=>setState("talk"),()=>setState("idle")); else speak(r,()=>setState("talk"),()=>setState("idle"));
+    if(gate) setTimeout(()=>go("me"),2600); }
   function startListen(){ const SR=window.SpeechRecognition||window.webkitSpeechRecognition; heard.current=""; SFX.hold(); buzz(25);
     if(!SR){ setState("listen"); return; }
     try{ const rg=new SR(); rg.lang="zh-TW"; rg.interimResults=true; rg.onresult=e=>{ let s=""; for(const r of e.results) s+=r[0].transcript; heard.current=s; }; rg.onend=()=>{ if(heard.current.trim()) ask(heard.current.trim()); else setState("idle"); }; rg.start(); recog.current=rg; setState("listen"); }catch(e){ setState("idle"); } }
@@ -548,7 +568,19 @@ function Photo({go}){ return h`<div class="page"><${Back} go=${go}/><div><span c
   <section class="glass center"><div style=${{aspectRatio:"3/4",borderRadius:22,background:"linear-gradient(160deg,var(--gold2),var(--bg2))",display:"grid",placeItems:"center",margin:"4px 0 12px",border:"2px dashed var(--gold)"}}><div class="note">把臉放進框裡<br/>她會說「往前一點」「下巴抬一點」<br/>對準後自動拍</div></div><button class="btn">開始拍照</button></section></div>`; }
 function Explore({go}){ return h`<div class="page"><${Back} go=${go}/><div><span class="eyebrow">Discover</span><h2>探索發現</h2></div>
   <section class="glass"><div class="list">${[["秋冬保濕三步驟","文章・3 分鐘"],["眼周細紋真實案例","認證診所・術前術後"],["2026 醫美趨勢","己美社團精選"]].map(([a,b])=>h`<div class="item"><div class="av">✦</div><div class="t">${a}<small>${b}</small></div></div>`)}</div></section><p class="sample">功能陸續開放</p></div>`; }
-function Me({go,profile,setProfile}){ return h`<div class="page"><${Back} go=${go}/><div><span class="eyebrow">Membership</span><h2>${profile.name||MEMBER.name}・${MEMBER.tier}</h2></div>
+function MemberCard({member,setMember}){ const [busy,setBusy]=useState(false);
+  const login=async(c)=>{ if(busy) return; setBusy(true); SFX.send(); buzz(15); const ok=await memberLogin(c); if(!ok){ setBusy(false); alert("登入服務暫時無法連線，請稍後再試。"); } };
+  if(!member) return h`<section class="glass"><b style=${{fontFamily:"var(--cjk)",fontSize:17}}>登入己美會員</b><div class="note" style=${{margin:"6px 0 12px"}}>登入後，分身和對話會跟著你的己美帳號走；換手機、重新安裝都不會不見。</div>
+    <button class="btn line" disabled=${busy} onClick=${()=>login("line")}><i>L</i>用 LINE 登入</button>
+    <button class="btn ghost" style=${{marginTop:8}} disabled=${busy} onClick=${()=>login()}>用 Email／手機登入</button>
+    <p class="note" style=${{marginTop:10,fontSize:12}}>還沒有己美帳號？登入頁可以直接註冊，基礎銀卡會員免費。</p></section>`;
+  const ini=(member.name||"己").slice(0,1);
+  return h`<section class="glass"><div class="mcard"><div class="ini">${member.avatar_url?h`<img src=${member.avatar_url} alt=""/>`:ini}</div><div style=${{flex:1,minWidth:0}}><b style=${{fontFamily:"var(--cjk)",fontSize:17}}>${member.name||"己美會員"}</b><div class="note" style=${{overflow:"hidden",textOverflow:"ellipsis"}}>${member.email||""}${member.vip_end?`・VIP 至 ${String(member.vip_end).slice(0,10)}`:""}</div></div><span class=${"pill"+(member.paid?" ok":"")}>${member.tier_label||member.tier}</span></div>
+    <div class="note" style=${{marginTop:10}}>分身與對話已跟著你的己美帳號，換手機登入就會回來。</div>
+    ${Store.requirePaid&&!member.paid?h`<a class="btn" style=${{marginTop:10,display:"block",textAlign:"center",textDecoration:"none"}} href=${Store.upgradeUrl} target="_blank" rel="noopener">升級付費會員，開啟分身陪伴</a>`:null}
+    <button class="btn ghost" style=${{marginTop:10,minHeight:40,fontSize:14}} onClick=${async()=>{ SFX.close(); buzz(10); await memberLogout(); setMember(null); }}>登出</button></section>`; }
+function Me({go,profile,setProfile,member,setMember}){ return h`<div class="page"><${Back} go=${go}/><div><span class="eyebrow">Membership</span><h2>${member?(member.name||profile.name||"己美會員"):(profile.name||"你好")}・${member?(member.tier_label||member.tier):"尚未登入"}</h2></div>
+  <${MemberCard} member=${member} setMember=${setMember}/>
   <section class="glass"><div class="avcard">${profile.photo?h`<img src=${profile.photo} alt=""/>`:h`<div class="sil">✦</div>`}<div style=${{flex:1}}><b style=${{fontFamily:"var(--cjk)",fontSize:18}}>${profile.avatarName||"尚未建立分身"}</b><div class="note">${profile.photo?`聲音：${(VOICES.find(v=>v.k===profile.voice)||VOICES[0]).n}・${profile.variant||"原圖"}${profile.senior?"・長輩模式":""}`:"拍一張照，就能擁有理想中的自己"}</div>
     <div class="row" style=${{marginTop:8}}><button class="btn" style=${{minHeight:40,fontSize:14}} onClick=${()=>go("create")}>${profile.photo?"重新建立":"建立分身"}</button>${profile.photo?h`<button class="btn ghost" style=${{minHeight:40,fontSize:14}} onClick=${async()=>{ const p={...profile,photo:null,avatarName:"",variant:"原圖"}; setProfile(p); await saveDoc("profile",p); SFX.close(); }}>刪除分身</button>`:null}</div></div></div></section>
   <section class="glass"><div class="kv"><span>本月即時對話</span><b>${MEMBER.liveMinutes.used}<small style=${{fontSize:14,color:"var(--muted)"}}> / ${MEMBER.liveMinutes.total} 分</small></b></div><div class="bar2"><i style=${{width:(MEMBER.liveMinutes.used/MEMBER.liveMinutes.total*100)+"%"}}></i></div></section>
@@ -570,7 +602,18 @@ function App(){
   const [p,setP]=useState("home");
   const [profile,setProfile]=useState(()=>{ try{ return JSON.parse(localStorage.getItem("doc:profile"))||{}; }catch(e){ return {}; } });
   const [ready,setReady]=useState(false);
-  useEffect(()=>{ (async()=>{ await storeInit(); const pr=await loadDoc("profile",null); if(pr) setProfile(pr); setReady(true); })(); },[]);
+  const [member,setMember]=useState(()=>Member.get());
+  const [notice,setNotice]=useState(null);
+  useEffect(()=>{ (async()=>{ await storeInit();
+    /* 己美會員登入回跳（?code=&state=） */
+    const cb=await handleCallback(); if(cb&&cb.reload) return;
+    if(cb&&cb.member){ setMember(cb.member); setP("me"); setNotice({t:`歡迎回來，${cb.member.name||"己美會員"}。分身已經跟著你的帳號了。`}); }
+    else if(cb&&cb.error){ setP("me"); setNotice({t:cb.error==="access_denied"?"你取消了登入，隨時可以再登入。":"登入沒有完成，請再試一次。",err:true}); }
+    try{ if(sessionStorage.getItem("selfai_open")==="me"){ sessionStorage.removeItem("selfai_open"); setP("me"); setNotice({t:"歡迎回來。你在別台建立的分身已經回來了。"}); } }catch(e){}
+    const pr=await loadDoc("profile",null); if(pr) setProfile(pr);
+    try{ const me=await api("self_me",{},8000); Store.requirePaid=!!me.require_paid; if(me.upgrade_url) Store.upgradeUrl=me.upgrade_url; if(me.member){ Member.set(me.member); setMember(me.member); } else if(!(cb&&cb.member)){ Member.set(null); setMember(null); } }catch(e){}
+    setReady(true); })(); },[]);
+  useEffect(()=>{ if(!notice) return; const t=setTimeout(()=>setNotice(null),7000); return ()=>clearTimeout(t); },[notice]);
   /* 入會影片輪詢：好了就寫進 profile.greetVideo */
   useEffect(()=>{ if(!profile.greetRender||profile.greetVideo) return; let stop=false;
     const tick=async()=>{ if(stop) return; try{ const r=await api("render_status",{render_id:profile.greetRender},20000); if(r.status==="done"&&r.video_url){ const p={...profile,greetVideo:r.video_url}; setProfile(p); await saveDoc("profile",p); return; } if(r.status==="failed"){ const p={...profile,greetRender:null}; setProfile(p); await saveDoc("profile",p); return; } }catch(e){} setTimeout(tick,20000); };
@@ -582,8 +625,10 @@ function App(){
       catch(e){ const p={...p0,greetErr:String(e.message||e).slice(0,80)}; setProfile(p); await saveDoc("profile",p); } })(); },[profile.photoUrl,profile.greetRender,profile.greetVideo]);
   useEffect(()=>{ window.scrollTo(0,0); stopSpeak(); },[p]);
   const Page={home:Home,goals:Goals,log:Log,clinic:Clinic,photo:Photo,explore:Explore,me:Me,settings:Settings,create:Create}[p]||Home;
+  /* 會員已登入但還沒在分身精靈填名字 → 先用己美帳號的稱呼 */
+  const prof=(member&&member.name&&!profile.name)?{...profile,name:member.name}:profile;
   if(!ready) return h`<div class="hero" style=${{display:"grid",placeItems:"center",color:"var(--ink)"}}><div class="logo" style=${{textAlign:"center"}}><div class="mark">SELF<b>己美</b></div><small>BEAUTY, HEALTH, A BETTER YOU</small></div></div>`;
-  return h`<div class=${p==="home"?"":"page-root"}><${Page} go=${setP} profile=${profile} setProfile=${setProfile} key=${p==="home"?"home-"+(profile.photo?1:0):p}/>
+  return h`<div class=${p==="home"?"":"page-root"}>${notice?h`<div class=${"toast"+(notice.err?" err":"")} role="status" onClick=${()=>setNotice(null)}>${notice.t}</div>`:null}<${Page} go=${setP} profile=${prof} setProfile=${setProfile} member=${member} setMember=${setMember} key=${p==="home"?"home-"+(profile.photo?1:0):p}/>
     <nav class="bar"><div class="in"><${AdBar}/>
       <div class="qn">
         <button class=${"tab"+(p==="home"?" on":"")} onClick=${()=>setP("home")}><span class="i">✦</span>首頁</button>
