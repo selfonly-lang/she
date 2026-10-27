@@ -1,0 +1,373 @@
+{
+  "schema_version": 1,
+  "scope": "public-visible",
+  "observed_at": "2026-10-27T04:58:00+08:00",
+  "evidence": {
+    "page": "https://ad.self.com.tw/products",
+    "visible_count": 38,
+    "method": "Browser-rendered catalogue matched against products_public and product_brand_public using public anon access. Two frontend-excluded IDs omitted. Not an authoritative full inventory or discontinuation feed."
+  },
+  "products": [
+    {
+      "id": "0db404d0-db3e-4197-9495-e07f80e7676f",
+      "spec": "100ml",
+      "category": "保養品",
+      "image_url": "https://bds.pbf.com.tw/upload/20250908090149lqgqj1.png",
+      "list_price": 4800,
+      "title": "寶齡 BDS 穀胱甘肽精華",
+      "source_url": "https://ad.self.com.tw/products/0db404d0-db3e-4197-9495-e07f80e7676f"
+    },
+    {
+      "id": "12d25cc4-3bad-410c-ae15-4e37c16a308e",
+      "spec": "規格： 輸入電壓:110V 頻率:50HZ 功率:400W 最大壓力值:7KPA 噴射速度:1850m/s 屏幕大小:7寸 透皮深度:4~6mm 儀器體積大小: 主機尺寸：長375✘寬270✘高222 基因槍外箱尺寸 高度：42cm 寬度：38cm 長度：45cm 裸機重量 12kg 加外箱重量 18kg",
+      "category": "美容",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/f8c61ff2-8131-4125-8d70-c6deb5040b43/1776411854752-0.jpg",
+      "list_price": 6000,
+      "title": "【超滲透霧化儀】主機加保方案",
+      "source_url": "https://ad.self.com.tw/products/12d25cc4-3bad-410c-ae15-4e37c16a308e"
+    },
+    {
+      "id": "18bd3a87-44f7-4269-a925-28141380a851",
+      "spec": "",
+      "category": "保養品",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/18bd3a87-44f7-4269-a925-28141380a851/011-900-6800000-010-01.jpg",
+      "list_price": 330,
+      "title": "蜂潤撫紋緊緻面膜 22ml (5片/盒)",
+      "source_url": "https://ad.self.com.tw/products/18bd3a87-44f7-4269-a925-28141380a851",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "25cd3e8c-fac3-4ea7-95b0-d9de06c702af",
+      "spec": "",
+      "category": "保養品",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/25cd3e8c-fac3-4ea7-95b0-d9de06c702af/011-901-6800000-002-01.jpg",
+      "list_price": 1680,
+      "title": "丰潤撫紋精華液 30ml",
+      "source_url": "https://ad.self.com.tw/products/25cd3e8c-fac3-4ea7-95b0-d9de06c702af",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "2982bc33-caf4-4479-ac04-34f52587e5e2",
+      "spec": "50ml",
+      "category": "保養品",
+      "image_url": "https://bds.pbf.com.tw/upload/20240712141951qki1n1.png",
+      "list_price": 2980,
+      "title": "寶齡 BDS 積雪草肌茵修護霜",
+      "source_url": "https://ad.self.com.tw/products/2982bc33-caf4-4479-ac04-34f52587e5e2"
+    },
+    {
+      "id": "2b815c9d-b16b-45f8-b15f-b7601d53d1af",
+      "spec": "",
+      "category": "保養品",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/2b815c9d-b16b-45f8-b15f-b7601d53d1af/011-900-6800000-009-01.jpg",
+      "list_price": 330,
+      "title": "玫瑰蜜肌亮白面膜 22ml (5片/盒)",
+      "source_url": "https://ad.self.com.tw/products/2b815c9d-b16b-45f8-b15f-b7601d53d1af",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "2d50e78b-cdcb-4814-8ea4-40a9250af36a",
+      "spec": "",
+      "category": "保養品",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/2d50e78b-cdcb-4814-8ea4-40a9250af36a/011-901-6800000-005-01.jpg",
+      "list_price": 3880,
+      "title": "泌薈賦活超級安瓶 10ml x2",
+      "source_url": "https://ad.self.com.tw/products/2d50e78b-cdcb-4814-8ea4-40a9250af36a",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "30ef92b1-5a0a-4926-8bb7-ccdffcdd9cfd",
+      "spec": "10ml/3支",
+      "category": "保養品",
+      "image_url": "https://bds.pbf.com.tw/upload/202309131122172yed11.webp",
+      "list_price": 2980,
+      "title": "寶齡 BDS 靈芝胜肽精華",
+      "source_url": "https://ad.self.com.tw/products/30ef92b1-5a0a-4926-8bb7-ccdffcdd9cfd"
+    },
+    {
+      "id": "31d17b3f-c3a7-4525-89d9-ae9f62831418",
+      "spec": "10ml/3支",
+      "category": "保養品",
+      "image_url": "https://bds.pbf.com.tw/upload/20231229103926ye3p61.jpg",
+      "list_price": 2980,
+      "title": "寶齡 BDS 晶透嫩膚油",
+      "source_url": "https://ad.self.com.tw/products/31d17b3f-c3a7-4525-89d9-ae9f62831418"
+    },
+    {
+      "id": "3cf31c4e-3444-4a79-a968-3dc07141f0b9",
+      "spec": "",
+      "category": "保養品",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/3cf31c4e-3444-4a79-a968-3dc07141f0b9/011-900-6800000-008-01.jpg",
+      "list_price": 330,
+      "title": "海葡萄蘆薈舒緩補水面膜 22ml (5片/盒)",
+      "source_url": "https://ad.self.com.tw/products/3cf31c4e-3444-4a79-a968-3dc07141f0b9",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "4042535a-c740-45ef-8f01-e5afd94e16f5",
+      "spec": "100ml",
+      "category": "保養品",
+      "image_url": "https://bds.pbf.com.tw/upload/2026020410570692rd21.png",
+      "list_price": 4800,
+      "title": "寶齡 BDS 淨透亮膚油",
+      "source_url": "https://ad.self.com.tw/products/4042535a-c740-45ef-8f01-e5afd94e16f5"
+    },
+    {
+      "id": "4226e012-1b4c-46a6-90c7-f2cfbda99f80",
+      "spec": "",
+      "category": "美容",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/4226e012-1b4c-46a6-90c7-f2cfbda99f80/011-900-6509100-001-01.jpg",
+      "list_price": 999,
+      "title": "FORA 嫩膚美容儀",
+      "source_url": "https://ad.self.com.tw/products/4226e012-1b4c-46a6-90c7-f2cfbda99f80",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "47350753-bc5d-44f6-b188-4d6e103a51df",
+      "spec": "",
+      "category": "保養品",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/47350753-bc5d-44f6-b188-4d6e103a51df/011-901-6800000-004-01.jpg",
+      "list_price": 1888,
+      "title": "逆齡新生緊緻乳霜 50ml",
+      "source_url": "https://ad.self.com.tw/products/47350753-bc5d-44f6-b188-4d6e103a51df",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "4aca6fb9-c596-40e8-acc0-774f602194a6",
+      "spec": "",
+      "category": "保養品",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/4aca6fb9-c596-40e8-acc0-774f602194a6/fora-27498-01.png",
+      "list_price": 489,
+      "title": "3日膠原高光旅行組(水潤輕盈組/抗老繃帶組-3件入)",
+      "source_url": "https://ad.self.com.tw/products/4aca6fb9-c596-40e8-acc0-774f602194a6",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "6a304be2-7746-4a00-bb9e-64154fbe29b2",
+      "spec": "",
+      "category": "保養品",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/6a304be2-7746-4a00-bb9e-64154fbe29b2/900-6800000-005-01.jpg",
+      "list_price": 700,
+      "title": "胺基酸澄淨潔顏慕斯 155ml",
+      "source_url": "https://ad.self.com.tw/products/6a304be2-7746-4a00-bb9e-64154fbe29b2",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "6b837f3c-aa9c-43d9-9532-b437914d9d0b",
+      "spec": "",
+      "category": "保養品",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/6b837f3c-aa9c-43d9-9532-b437914d9d0b/025-900-6800000-902-01.jpg",
+      "list_price": 1399,
+      "title": "【星旺獨家限定】｜ 奢潤煥膚臻選面膜禮盒",
+      "source_url": "https://ad.self.com.tw/products/6b837f3c-aa9c-43d9-9532-b437914d9d0b",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "6d3ef6b2-8058-440a-9af2-194090aaa3f7",
+      "spec": "",
+      "category": "保養品",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/6d3ef6b2-8058-440a-9af2-194090aaa3f7/011-901-6800000-007-01.jpg",
+      "list_price": 1580,
+      "title": "外泌體豐髮精華 60g",
+      "source_url": "https://ad.self.com.tw/products/6d3ef6b2-8058-440a-9af2-194090aaa3f7",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "6e76f3a6-1aa0-461b-ac5a-01dbce476bc0",
+      "spec": "100ml",
+      "category": "保養品",
+      "image_url": "https://bds.pbf.com.tw/upload/20250908085329i96j11.png",
+      "list_price": 4800,
+      "title": "寶齡 BDS 5D玻尿酸精華",
+      "source_url": "https://ad.self.com.tw/products/6e76f3a6-1aa0-461b-ac5a-01dbce476bc0"
+    },
+    {
+      "id": "756885ac-5419-48d2-8c3c-dcbf4de8dc32",
+      "spec": "100ml",
+      "category": "保養品",
+      "image_url": "https://bds.pbf.com.tw/upload/20250908084504p09ph1.png",
+      "list_price": 4800,
+      "title": "寶齡 BDS 靈芝胜肽精華",
+      "source_url": "https://ad.self.com.tw/products/756885ac-5419-48d2-8c3c-dcbf4de8dc32"
+    },
+    {
+      "id": "93ed017d-4d6d-47f1-89f4-483688a8a426",
+      "spec": "10ml+220mg",
+      "category": "保養品",
+      "image_url": "https://bds.pbf.com.tw/upload/20250610133716yktk41.png",
+      "list_price": 3680,
+      "title": "寶齡 BDS 速升媞煥采盒(居家版)",
+      "source_url": "https://ad.self.com.tw/products/93ed017d-4d6d-47f1-89f4-483688a8a426"
+    },
+    {
+      "id": "94a2b0d2-4c7d-4a3c-8903-76597082be52",
+      "spec": "",
+      "category": "保養品",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/94a2b0d2-4c7d-4a3c-8903-76597082be52/011-900-6800000-006-01.jpg",
+      "list_price": 520,
+      "title": "海葡萄保濕安敏生物纖維面膜 25ml",
+      "source_url": "https://ad.self.com.tw/products/94a2b0d2-4c7d-4a3c-8903-76597082be52",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "9ed8432e-47b8-4c19-aae2-11fb7a9ec8e6",
+      "spec": "",
+      "category": "保養品",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/9ed8432e-47b8-4c19-aae2-11fb7a9ec8e6/011-901-6800000-023-01.jpg",
+      "list_price": 780,
+      "title": "全效修護水潤防曬乳 SPF50+★★★",
+      "source_url": "https://ad.self.com.tw/products/9ed8432e-47b8-4c19-aae2-11fb7a9ec8e6",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "a49ce4e9-16f1-4d53-ac4f-2ea75f3462d1",
+      "spec": "22ml/60片",
+      "category": "保養品",
+      "image_url": "https://bds.pbf.com.tw/upload/20240717141327k0vz31.png",
+      "list_price": 7200,
+      "title": "寶齡 BDS 積雪草修護點滴面膜",
+      "source_url": "https://ad.self.com.tw/products/a49ce4e9-16f1-4d53-ac4f-2ea75f3462d1"
+    },
+    {
+      "id": "a9e54691-8fd5-4602-9122-b3bfd4d57ad3",
+      "spec": "",
+      "category": "美容",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/a9e54691-8fd5-4602-9122-b3bfd4d57ad3/fora-23946-01.png",
+      "list_price": 2180,
+      "title": "FORA 微電流美容儀",
+      "source_url": "https://ad.self.com.tw/products/a9e54691-8fd5-4602-9122-b3bfd4d57ad3",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "aa345983-144b-437a-8372-bfa806c82fc8",
+      "spec": "10ml/3支",
+      "category": "保養品",
+      "image_url": "https://bds.pbf.com.tw/upload/20230913110907yuqcy1.webp",
+      "list_price": 2980,
+      "title": "寶齡 BDS 穀胱甘肽精華",
+      "source_url": "https://ad.self.com.tw/products/aa345983-144b-437a-8372-bfa806c82fc8"
+    },
+    {
+      "id": "ad813421-d8ed-4af6-afda-cfc2cb466e12",
+      "spec": "30ml",
+      "category": "保養品",
+      "image_url": "https://bds.pbf.com.tw/upload/20231229103040x0n0r1.jpg",
+      "list_price": 880,
+      "title": "寶齡 BDS 潤色美肌修護防曬霜 SPF50+★★★",
+      "source_url": "https://ad.self.com.tw/products/ad813421-d8ed-4af6-afda-cfc2cb466e12"
+    },
+    {
+      "id": "b0090ba5-b2ca-42ff-a89e-1deefd4dccc3",
+      "spec": "10ml/3支",
+      "category": "保養品",
+      "image_url": "https://bds.pbf.com.tw/upload/202402071144411k8sj1.jpg",
+      "list_price": 2980,
+      "title": "寶齡 BDS 5D玻尿酸精華",
+      "source_url": "https://ad.self.com.tw/products/b0090ba5-b2ca-42ff-a89e-1deefd4dccc3"
+    },
+    {
+      "id": "b4ac3f6a-70f8-427e-b4b0-234d996863f7",
+      "spec": "70ml",
+      "category": "保養品",
+      "image_url": "https://bds.pbf.com.tw/upload/20260702111539k6ing1.png",
+      "list_price": 1680,
+      "title": "寶齡 BDS 極萃肌泌活泉噴霧",
+      "source_url": "https://ad.self.com.tw/products/b4ac3f6a-70f8-427e-b4b0-234d996863f7"
+    },
+    {
+      "id": "bb75bc5a-8c39-4603-832d-158dc10a42e9",
+      "spec": "",
+      "category": "保養品",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/bb75bc5a-8c39-4603-832d-158dc10a42e9/011-901-6800000-001-01.jpg",
+      "list_price": 1080,
+      "title": "晶瑩保濕露 150ml",
+      "source_url": "https://ad.self.com.tw/products/bb75bc5a-8c39-4603-832d-158dc10a42e9",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "cb7adeb9-fa7d-4c85-be3e-05ed8d62525d",
+      "spec": "",
+      "category": "保養品",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/cb7adeb9-fa7d-4c85-be3e-05ed8d62525d/011-900-6800000-901-01.jpg",
+      "list_price": 569,
+      "title": "光采御藏面膜精選",
+      "source_url": "https://ad.self.com.tw/products/cb7adeb9-fa7d-4c85-be3e-05ed8d62525d",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "d7710a13-8ba6-4789-8f80-65ff32c3abe4",
+      "spec": "480ml",
+      "category": "保養品",
+      "image_url": "https://bds.pbf.com.tw/upload/20250225134929ppzeq1.png",
+      "list_price": 900,
+      "title": "寶齡 BDS 淨嫩潔淨慕斯",
+      "source_url": "https://ad.self.com.tw/products/d7710a13-8ba6-4789-8f80-65ff32c3abe4"
+    },
+    {
+      "id": "f2c3587a-6806-40be-b5e1-d33af8abfe15",
+      "spec": "",
+      "category": "保養品",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/f2c3587a-6806-40be-b5e1-d33af8abfe15/011-900-6800000-007-01.jpg",
+      "list_price": 699,
+      "title": "普拉斯鏈修復撫紋生物纖維乳液面膜 25ml",
+      "source_url": "https://ad.self.com.tw/products/f2c3587a-6806-40be-b5e1-d33af8abfe15",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "f3083db9-05e6-42f0-858d-234bd9ed89a3",
+      "spec": "470ml",
+      "category": "保養品",
+      "image_url": "https://bds.pbf.com.tw/upload/20240627172208i83u41.png",
+      "list_price": 2800,
+      "title": "寶齡 BDS 柔膚極淨卸妝液",
+      "source_url": "https://ad.self.com.tw/products/f3083db9-05e6-42f0-858d-234bd9ed89a3"
+    },
+    {
+      "id": "f5a3aefc-1df4-4fc1-b7ad-83e644314fd6",
+      "spec": "",
+      "category": "保養品",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/f5a3aefc-1df4-4fc1-b7ad-83e644314fd6/011-810-4172200-004-01.jpg",
+      "list_price": 1000,
+      "title": "FORA MD6 總膽固醇試片單盒",
+      "source_url": "https://ad.self.com.tw/products/f5a3aefc-1df4-4fc1-b7ad-83e644314fd6",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "f6a93b31-9d98-4f3d-a36d-4de0df5da7cd",
+      "spec": "",
+      "category": "保養品",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/f6a93b31-9d98-4f3d-a36d-4de0df5da7cd/011-901-6800000-003-01.jpg",
+      "list_price": 1588,
+      "title": "潤澤保濕乳 50ml",
+      "source_url": "https://ad.self.com.tw/products/f6a93b31-9d98-4f3d-a36d-4de0df5da7cd",
+      "brand": "FORA 福爾"
+    },
+    {
+      "id": "f834f764-789e-425c-88cd-d1e4914d87d0",
+      "spec": "450ml",
+      "category": "保養品",
+      "image_url": "https://bds.pbf.com.tw/upload/20240627172222s74u81.png",
+      "list_price": 3800,
+      "title": "寶齡 BDS 胺基酸導潤液",
+      "source_url": "https://ad.self.com.tw/products/f834f764-789e-425c-88cd-d1e4914d87d0"
+    },
+    {
+      "id": "f8c61ff2-8131-4125-8d70-c6deb5040b43",
+      "spec": "規格： 輸入電壓:110V 頻率:50HZ 功率:400W 最大壓力值:7KPA 噴射速度:1850m/s 屏幕大小:7寸 透皮深度:4~6mm 儀器體積大小: 主機尺寸：長375✘寬270✘高222 基因槍外箱尺寸 高度：42cm 寬度：38cm 長度：45cm 裸機重量 12kg 加外箱重量 18kg",
+      "category": "美容",
+      "image_url": "https://iftpibfhguolauwlhjxe.supabase.co/storage/v1/object/public/product-images/products/f8c61ff2-8131-4125-8d70-c6deb5040b43/1776411854752-0.jpg",
+      "list_price": 48000,
+      "title": "【超滲透霧化儀】為台灣美業專業人士打造新輕美解決方案",
+      "source_url": "https://ad.self.com.tw/products/f8c61ff2-8131-4125-8d70-c6deb5040b43"
+    },
+    {
+      "id": "feb8e38b-a5b8-40d5-8c19-c110f9467a12",
+      "spec": "70ml",
+      "category": "保養品",
+      "image_url": "https://bds.pbf.com.tw/upload/202309131052112ma8s1.webp",
+      "list_price": 1280,
+      "title": "寶齡 BDS 完美賦活修護噴霧",
+      "source_url": "https://ad.self.com.tw/products/feb8e38b-a5b8-40d5-8c19-c110f9467a12"
+    }
+  ]
+}
