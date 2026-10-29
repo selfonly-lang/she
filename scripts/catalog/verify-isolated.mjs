@@ -34,4 +34,30 @@ assert.deepEqual((await db.query('select snapshot from she_orders')).rows[0].sna
 assert.equal((await db.query('select rate from she_commissions')).rows[0].rate,'0.3');
 assert.equal((await db.query('select enabled from she_product_visibility')).rows[0].enabled,true);
 assert.equal(planSync(source([changed]),await snapshot()).operations.some(o=>o.values.active===true),false);
+// Combined update/discontinue: review order, partial approval, replay and stale rollback.
+await db.exec("CREATE TABLE she_memberships(id int, rights jsonb); INSERT INTO she_memberships VALUES(1,'{\"tier\":\"VIP\"}');");
+const protectedSnapshot=async()=>{const result={};for(const table of ['she_prices','she_orders','she_commissions','she_product_visibility','she_memberships'])result[table]=(await db.query(`select * from ${table}`)).rows;return result;};
+const protectedBefore=await protectedSnapshot();
+for(const indexes of [[0,1],[1,0],[0],[1]]) {
+  await db.exec("update she_products set active=true,spec='100ml'");
+  const before=(await snapshot()).products[0];
+  const combined=source([{...changed,title:before.title,spec:'300ml',status:'discontinued',status_evidence:'Verified synthetic tombstone'}]);combined.scope='authoritative';
+  const plan=planSync(combined,await snapshot());assert.deepEqual(plan.operations.map(o=>o.kind),['update','discontinue']);
+  const statement=compileSql(plan,{plan_hash:plan.plan_hash,operation_indexes:indexes});
+  await db.exec(statement);const first=(await snapshot()).products[0];
+  assert.equal(first.id,before.id);assert.equal(first.ad_source_product_id,before.ad_source_product_id);
+  assert.equal(first.spec,indexes.includes(0)?'300ml':'100ml');assert.equal(first.active,!indexes.includes(1));
+  assert.equal(first.price_visible,before.price_visible);
+  await db.exec(statement);assert.deepEqual((await snapshot()).products[0],first);
+  assert.deepEqual(await protectedSnapshot(),protectedBefore);
+}
+// A stale combined operation rolls back an earlier approved insert, even with reverse selection.
+await db.exec("update she_products set active=true,spec='100ml'");
+const staleSource=source([next,{...changed,title:'Manual editorial change',spec:'400ml',status:'discontinued',status_evidence:'Verified tombstone'}]);staleSource.scope='authoritative';
+const stalePlan=planSync(staleSource,await snapshot());
+await db.exec("update she_products set spec='Concurrent edit'");
+const staleBefore=await snapshot();
+await assert.rejects(()=>db.exec(compileSql(stalePlan,{plan_hash:stalePlan.plan_hash,operation_indexes:[2,1,0]})),/Stale product/);
+await db.exec('ROLLBACK');assert.deepEqual(await snapshot(),staleBefore);assert.deepEqual(await protectedSnapshot(),protectedBefore);
+console.log('PASS: combined forward/reverse/partial approvals, replay, stale combined batch rollback; identities, prices, memberships, orders, commissions and visibility preserved.');
 await db.close();console.log('PASS: isolated PostgreSQL insert/update/replay, hostile text, stale-batch rollback, discontinuation, prices/orders/commissions/visibility preservation.');

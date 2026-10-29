@@ -57,7 +57,11 @@ export function compileSql(plan, approval) {
   assert(Array.isArray(approval.operation_indexes)&&approval.operation_indexes.length>0,'Select reviewed operations');
   assert(new Set(approval.operation_indexes).size===approval.operation_indexes.length,'Duplicate operation index');
   const blocks=[];
-  for(const i of approval.operation_indexes) {
+  // Approval indexes select a subset; execution follows the hashed plan order.
+  // planSync emits field updates before discontinuation for the same product.
+  // Validate before sorting so malformed indexes still fail closed.
+  for(const i of approval.operation_indexes) assert(Number.isInteger(i)&&plan.operations[i],'Invalid operation index');
+  for(const i of [...approval.operation_indexes].sort((a,b)=>a-b)) {
     assert(Number.isInteger(i)&&plan.operations[i],'Invalid operation index');
     const op=plan.operations[i]; uuid(op.source_id);
     assert(['insert','update','discontinue'].includes(op.kind),'Invalid operation');
